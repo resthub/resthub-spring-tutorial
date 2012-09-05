@@ -5,16 +5,17 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 @Entity
-public class Sample {
+public class Task {
 
     private Long id;
     private String name;
+    private String description;
 
-    public Sample() {
+    public Task() {
         super();
     }
 
-    public Sample(String name) {
+    public Task(String name) {
         super();
         this.name = name;
     }
@@ -35,5 +36,13 @@ public class Sample {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

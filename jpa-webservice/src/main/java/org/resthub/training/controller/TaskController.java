@@ -3,26 +3,25 @@ package org.resthub.training.controller;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.resthub.training.model.Task;
+import org.resthub.training.repository.TaskRepository;
 import org.resthub.web.controller.RepositoryBasedRestController;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import org.resthub.training.model.Sample;
-import org.resthub.training.repository.SampleRepository;
-
 @Controller
-@RequestMapping(value = "/api/sample")
-public class SampleController extends RepositoryBasedRestController<Sample, Long, SampleRepository> {
+@RequestMapping(value = "/api/task")
+public class TaskController extends RepositoryBasedRestController<Task, Long, TaskRepository> {
 
     @Inject
-    @Named("sampleRepository")
+    @Named("taskRepository")
     @Override
-    public void setRepository(SampleRepository repository) {
+    public void setRepository(TaskRepository repository) {
         this.repository = repository;
     }
 
     @Override
-    public Long getIdFromResource(Sample resource) {
+    public Long getIdFromResource(Task resource) {
         return resource.getId();
     }
 }
