@@ -136,9 +136,9 @@ We can also test that:
 .. code-block:: javascript
 
    {
-    "id": 1,
-    "name": "testTask1",
-    "description": "new description"
+      "id": 1,
+      "name": "testTask1",
+      "description": "new description"
    }
    
 **update the Task** 1 with the new description
@@ -149,7 +149,73 @@ We can also test that:
 .. code-block:: javascript
 
    {
-    "name": "new test Task",
-    "description": "new description"
+      "name": "new test Task",
+      "description": "new description"
    }
 
+Step 3: Customize Controller
+----------------------------
+
+We now have a basic REST interface uppon our Task model object providing default methods and behaviour implemented by resthub.
+
+Let's suppose that the current findall : `<http://localhost:8080/api/task?page=all>`_ does not match our needs: the current implementation
+returns a paginated list containing all elements in order to provide a consistent API between a *find all* and a *find paginated*.
+
+In our case, we want a ``findAll`` implementation that returns a simple non paginated list of tasks: 
+
+Open your ``TaskController.java`` and create a new method called ``findAllNonPaginated`` and mapped on ``/api/task?page=no``. Implement this
+using your repository findAll method (see `documentation <http://static.springsource.org/spring-data/data-jpa/docs/current/api/org/springframework/data/jpa/repository/JpaRepository.html#findAll()>`_).
+
+Check on your browser that `<http://localhost:8080/api/task?page=no>`_ works and display a simple list of tasks, without pagination:
+
+.. code-block:: javascript
+
+   [{
+       "id": 1,
+       "name": "testTask1",
+       "description": null
+   }, {
+       "id": 2,
+       "name": "testTask2",
+       "description": null
+   }, {
+       "id": 3,
+       "name": "testTask3",
+       "description": null
+   }]
+
+**Note**: We cannot simply override ``/api/task?page=all`` method because mappings are currently defined in interface ``RestController`` 
+(see `documentation <http://jenkins.pullrequest.org/job/resthub-spring-stack-master/javadoc/org/resthub/web/controller/RestController.html>`_)
+and *Spring MVC* does not accept that a path appear twice.
+
+Test your controller
+++++++++++++++++++++
+
+Resthub provide some test tooling : `<http://resthub.org/2/spring-stack.html#testing>`_
+
+We are going to test our new controller ``findAllNonPaginated`` method: 
+
+Add resthub-test dependency in your pom.xml:
+
+.. code-block:: xml
+
+   <dependency>
+      <groupId>org.resthub</groupId>
+      <artifactId>resthub-test</artifactId>
+      <version>${resthub.spring.stack.version}</version>
+      <scope>test</scope>
+   </dependency>
+   
+In ``src/test/org/resthub/training``, add a ``controller`` directory and create a ``TaskControllerTest`` inside. 
+
+We first want to make an **integration test** of our controller:
+
+Make your ``TaskControllerTest`` extend resthub ``AbstractWebTest`` 
+(see `documentation <http://jenkins.pullrequest.org/job/resthub-spring-stack-master/javadoc/org/resthub/test/common/AbstractWebTest.html>`_)
+and implement a new ``findAllNonPaginated`` test method that creates some tasks and call controller. 
+
+Verify that the new controller: 
+
+- returns a response that is not empty, 
+- does not contain pagination
+- contains the created tasks.
