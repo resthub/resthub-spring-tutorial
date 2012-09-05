@@ -102,6 +102,3 @@ This package contains the following sub packages and files:
 ``src/main/resources`` contains all non java source files and, in particular, your spring application context, your database configuration file and you logging configuration.
 
 ``src/test/`` contains, obviously, all you test related files and has the same structure as src/main (i.e. *java* and *resources*).
-
-
-
