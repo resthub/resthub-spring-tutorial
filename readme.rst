@@ -156,7 +156,7 @@ We can also test that:
 Step 3: Customize Controller
 ----------------------------
 
-**Solution** : solution can be retrived in `<http://github.com/resthub/resthub-spring-training/tree/step3-solution>`_
+**Solution** : solution can be retrieved in `<http://github.com/resthub/resthub-spring-training/tree/step3-solution>`_
 
 We now have a basic REST interface uppon our Task model object providing default methods and behaviour implemented by resthub.
 
@@ -165,8 +165,8 @@ returns a paginated list containing all elements in order to provide a consisten
 
 In our case, we want a ``findAll`` implementation that returns a simple non paginated list of tasks: 
 
-Open your ``TaskController.java`` and create a new method called ``findAllNonPaginated`` and mapped on ``/api/task?page=no``. Implement this
-using your repository findAll method (see `documentation <http://static.springsource.org/spring-data/data-jpa/docs/current/api/org/springframework/data/jpa/repository/JpaRepository.html#findAll()>`_).
+Open your ``TaskController.java`` and create a new method called ``findAllNonPaginated`` and mapped to ``/api/task?page=no``. Implement this
+using repository findAll method (see `documentation <http://static.springsource.org/spring-data/data-jpa/docs/current/api/org/springframework/data/jpa/repository/JpaRepository.html#findAll()>`_).
 
 Check on your browser that `<http://localhost:8080/api/task?page=no>`_ works and display a simple list of tasks, without pagination:
 
@@ -188,12 +188,12 @@ Check on your browser that `<http://localhost:8080/api/task?page=no>`_ works and
 
 **Note**: We cannot simply override ``/api/task?page=all`` method because mappings are currently defined in interface ``RestController`` 
 (see `documentation <http://jenkins.pullrequest.org/job/resthub-spring-stack-master/javadoc/org/resthub/web/controller/RestController.html>`_)
-and *Spring MVC* does not accept that a path appear twice.
+and *Spring MVC* does not accept that a path appears twice.
 
 Test your controller
 ++++++++++++++++++++
 
-Resthub provide some test tooling : `<http://resthub.org/2/spring-stack.html#testing>`_
+Resthub provide some testing tooling : `<http://resthub.org/2/spring-stack.html#testing>`_
 
 We are going to test our new controller ``findAllNonPaginated`` method: 
 
