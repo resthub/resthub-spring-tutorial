@@ -156,6 +156,8 @@ We can also test that:
 Step 3: Customize Controller
 ----------------------------
 
+**Solution** : solution can be retrived in `<http://github.com/resthub/resthub-spring-training/tree/step3-solution>`_
+
 We now have a basic REST interface uppon our Task model object providing default methods and behaviour implemented by resthub.
 
 Let's suppose that the current findall : `<http://localhost:8080/api/task?page=all>`_ does not match our needs: the current implementation
