@@ -375,3 +375,35 @@ chain.
   ``PUT`` request in order to affect user 1 to task 1.
 
 You can test in your browser (or, better, add a test in ``TaskControllerTest``) that the new API is operational.
+
+
+Step 5: Validate your beans and embed entities
+----------------------------------------------
+
+**Solution** : solution can be retrieved in `<http://github.com/resthub/resthub-spring-training/tree/step5-solution>`_
+
+Finally, we want to add validation constraints to our model. This could be done by using BeanValidation (JSR303 Spec) and its reference
+implementation: Hibernate Validator. see `documentation <http://docs.jboss.org/hibernate/validator/4.1/reference/en-US/html_single/>`_
+
+**Modify User and Task to add validation**: 
+
+- User name and email are mandatory and not empty
+- User email should match regexp ``.+@.+\\.[a-z]+``
+- Task title is mandatory and not empty
+
+Verify that your integration tests (and initializer) fail. Make it pass.
+
+**Add embedded address to users**:
+
+- Modify User model to add an embedded entity address to store user address (city, country).
+  see `documentation <http://docs.jboss.org/hibernate/orm/4.1/manual/en-US/html_single/#mapping-declaration-component>`_
+- Add a ``UserRepositoryIntegrationTest`` class in ``src/test/java/org/resthub/training/repository/integration`` and implement
+  a test that try to create a user with an embedded address. Check that you can then call a findOne of this user and that
+  the return object contains address object. Your test should extend ``AbstractTest``
+  
+**Add nested validation**:
+
+- Add validation constraints to your Address : city and country must be not null and not empty
+- Add annotation on User to guarantee that address object is null or valid (see ``@Valid`` annotation).
+- Modify ``UserRepositoryIntegrationTest`` to test that a user can be created with a null address but exception is thrown when 
+  address is incomplete (e.g. country is null or empty).

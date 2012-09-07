@@ -1,9 +1,12 @@
 package org.resthub.training.model;
 
+import org.hibernate.validator.constraints.NotEmpty;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.NotNull;
 
 @Entity
 public class Task {
@@ -37,6 +40,8 @@ public class Task {
         this.id = id;
     }
 
+    @NotNull
+    @NotEmpty
     public String getTitle() {
         return title;
     }

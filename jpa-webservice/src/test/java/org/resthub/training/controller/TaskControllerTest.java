@@ -41,7 +41,7 @@ public class TaskControllerTest extends AbstractWebTest {
         Client httpClient = new Client();
         Response resp = httpClient.url(rootUrl()).xmlPost(new Task("task1")).get();
         Task task = XmlHelper.deserialize(resp.getBody(), Task.class);
-        resp = httpClient.url(userRootUrl()).xmlPost(new User("user1")).get();
+        resp = httpClient.url(userRootUrl()).xmlPost(new User("user1", "user1@test.org")).get();
         User user = XmlHelper.deserialize(resp.getBody(), User.class);
         String responseBody = httpClient.url(rootUrl() + "/" + task.getId() + "/user/" + user.getId()).put("").get().getBody();
         Assertions.assertThat(responseBody).isNotEmpty();

@@ -1,8 +1,12 @@
 package org.resthub.training.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.persistence.*;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import java.util.List;
 
 @Entity
@@ -12,6 +16,7 @@ public class User {
     private String name;
     private String email;
     private List<Task> tasks;
+    private Address address;
 
     public User() {
         super();
@@ -37,6 +42,8 @@ public class User {
         this.id = id;
     }
 
+    @NotNull
+    @NotEmpty
     public String getName() {
         return name;
     }
@@ -45,6 +52,8 @@ public class User {
         this.name = name;
     }
 
+    @NotNull
+    @Pattern(regexp = ".+@.+\\.[a-z]+")
     public String getEmail() {
         return email;
     }
@@ -61,6 +70,16 @@ public class User {
 
     public void setTasks(List<Task> tasks) {
         this.tasks = tasks;
+    }
+
+    @Valid
+    @Embedded
+    public Address getAddress() {
+        return address;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
     }
 
     @Override
