@@ -221,3 +221,156 @@ Verify that the new controller:
 - returns a response that is not empty, 
 - does not contain pagination
 - contains the created tasks.
+
+Step 4: Users own tasks
+-----------------------
+
+**Prerequisites** : you can find some prerequisites and reference implementation of ``NotificationService`` and ``MockConfiguration`` in
+`<http://github.com/resthub/resthub-spring-training/tree/step4-prerequisites>`_
+
+**Solution** : solution can be retrived in `<http://github.com/resthub/resthub-spring-training/tree/step4-solution>`_
+
+Implement a new domain model ``User`` containing a name and an email and owning tasks:
+
+- User owns 0 or n tasks
+- Task is owned by 0 or 1 user
+
+Each domain object should contain relation to the other. Relations should be **mapped with JPA** 
+(see `documentation <http://docs.jboss.org/hibernate/orm/4.1/manual/en-US/html_single/#mapping-declaration>`_) in order to be saved and retrieved from database.
+
+**Provide dedicated Repository and Controller for user**.
+
+Modify ``TaskInitializer`` in order to provide some sample users associated to tasks at startup. You should provide a new constructor for Tasks with a user parameter.
+Don't forget to add a userRepository if needed and declare your initializer as Transactional 
+`documentation <http://static.springsource.org/spring/docs/3.1.x/spring-framework-reference/html/transaction.html#transaction-declarative-annotations>`_ !
+
+Be caution with potential infinite JSON serialization. Ignore tasks lists serialization in JSON user serialization.
+
+Check on your browser that User API `<http://localhost:8080/api/user>`_ works and provide simple CRUD and that `<http://localhost:8080/api/task>`_ still work.
+
+You can thus add domain models and provide for each one a simple CRUD API whithout doing nothing but defining empty repositories and controllers.
+But if you have more than simple CRUD needs, resthub provides also a generic **Service layer** that could be extended to fit your business needs.
+
+**Create a new dedicated service for business user management**: 
+
+- create a new ``TaskService`` interface in package ``org.resthub.training.service`` extending ``CrudService`` 
+  (see `documentation <http://jenkins.pullrequest.org/job/resthub-spring-stack-master/javadoc/org/resthub/common/service/CrudService.html>`_).
+- create a new ``TaskServiceImpl`` class in package ``org.resthub.training.service.impl`` extending
+  ``CrudServiceImpl`` (see `documentation <http://jenkins.pullrequest.org/job/resthub-spring-stack-master/javadoc/org/resthub/common/service/impl/CrudServiceImpl.html>`_)
+  and implementing ``TaskService``.
+- modify ``TaskController`` to switch from ``taskRepository`` to ``taskService`` (don't forget to switch from ``RepositoryBasedRestController`` extension class to
+  ``ServiceBasedRestController``.
+  
+Check that your REST interface is still working :-)
+
+The idea is now to **add a method that affect a user to a task** based on user and task ids. During affectation, the user should be notified that a new task 
+has been affected and, if exists, the old affected user should be notified that he loosed an affectation. These business operations should be implemented in service layer: 
+
+- create method ``affectTask`` in ``TaskService`` interface and implement it in ``TaskServiceImpl``. Notification simulation should be performed by implementing a custom ``NotificationService`` that simply
+  log the event (you can also get the implementation from our repo in step4 solution). It is important to have an independant service (for mocking - see below - purposes)
+  and you should not simply log in your new method.
+
+.. code-block:: java
+
+   // NotificationService
+   void send(String email, String message);
+   
+   // TaskService
+   Task affectTask(Long taskId, Long userId);
+   
+- In ``affectTask`` implementation, validate parameters to ensure that both userId and taskId are not null and correspond to valid objects 
+  (see `documentation <http://static.springsource.org/spring/docs/3.0.x/javadoc-api/org/springframework/util/Assert.html>`_).
+- Tip : You will need to manipulate userRepository in TaskService ...
+- Tip 2 : You don't even have to call repository.save due to Transactional behaviour of your service
+  (see `documentation <http://static.springsource.org/spring/docs/3.1.x/spring-framework-reference/html/transaction.html#transaction-declarative-annotations>`_).
+- Tip 3 : Maybe you should consider to implement equals and hashCode methods for User & Task
+   
+**Test your new service**
+   
+We will now write an integration test for our new service:
+
+Create a new ``TaskServiceIntegrationTest`` integration test in ``src/test/org/resthub/training/service/integration``. This test should extend ``org.resthub.test.common.AbstractTest``.
+This makes this test **aware of spring context but non transactional** because testing a service should be done in a non transactional way. This is indeed the
+way in which the service will be called (e.g. by controller). The repository test should extend ``org.resthub.test.common.AbstractTransactionalTest`` to be runned
+in a transactional context, as done by service.
+
+This test should perform an unique operation:
+
+- Create user and task and affect task to user.
+- Refresh the task by calling service.findById and check the retrived task contains the affected user
+
+Try until test passes :-)
+
+
+If you didn't do anything else, you can see that we didn't manage notification service calls. In our case, this is not a real problem because
+our implementation simply perform a log. But in a real sample, this will lead our unit tests to send a mail to a user (and thus will need for us to
+be able to send a mail in tests, etc.). So **we need to mock**.
+
+**Mock notification service**
+
+- Add in ``src/test/java/org/resthub/training`` a new ``MockConfiguration`` class: 
+
+.. code-block:: java
+
+   @Configuration
+   @ImportResource("classpath*:applicationContext.xml")
+   @Profile("test")
+   public class MocksConfiguration {
+
+       @Bean(name = "notificationService")
+       public NotificationService mockedNotificationService() {
+           return mock(NotificationService.class);
+       }
+
+   }
+   
+This class allows to define a mocked alias bean to notificationService bean for test purposes. Its is scoped as **test profile** 
+(see `documentation <http://blog.springsource.com/2011/02/14/spring-3-1-m1-introducing-profile/>`_).
+
+- Modify your ``TaskServiceIntegrationTest`` to load our configuration:
+
+.. code-block:: java
+
+   @ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = MocksConfiguration.class)
+   @ActiveProfiles("test")
+   public class TaskServiceIntegrationTest extends AbstractTest {
+      ...
+   }
+   
+- Modify your test to check that ``NotificationService.send()`` method is called once when a user is affected to a task and twice if there was
+  already a user affected to this task. Check the values of parameters passed to send method.
+- Tip : You'll need to inject your mocked service and use ``Mockito`` API and ``verify`` method 
+  (see `documentation <http://docs.mockito.googlecode.com/hg/latest/org/mockito/Mockito.html>`_.
+  
+This mock allows us to verify integration with others services and API whitout testing all these external tools.
+
+This integration test is really usefull to validate your the complete chain i.e. service -> repository -> database (and, thus, your JPA mapping)
+but, it is not necessary to write integration tests to test only your business and the logic of a given method.
+
+It is really more performant and efficient to write *real unit tests* by using mocks.
+
+**Unit test with mocks**
+
+- Create a new ``TaskServiceTest`` class in ``src/test/java/org/resthub/training/service``. This test should not extend any other class.
+- Declare and mock (cf. `documentation <http://docs.mockito.googlecode.com/hg/latest/org/mockito/Mockito.html#verification>`_) ``userRepository``,
+  ``taskRepository`` and ``notificationService``.
+- Define that when call in ``userRepository.findOne()`` with parameter equal to 1L, the mock will return a valid user instance, null otherwise.
+- Define that when call in ``taskRepository.findOne()`` with parameter equal to 1L, the mock will return a valid task instance, null otherwise.
+- Provide these mocks to a new TaskServiceImpl instance (note that this test is a real unit test so we fon't use spring at all).
+- Tip : These declarations could be implemented in a ``@BeforeClass`` method.
+- Tip 2: It will be maybe necessary that you provide setters in TaskServiceImpl for userRepository and notificationService.
+- Implement tests:
+   - Check that the expected exception is thrown when userId or taskId are null   
+   - Check that the expected exception is thrown when userId or taskId does not match any object.
+   - Check that the returned task contains the affected user.
+   
+Working mainly with unit tests (whithout launching spring context, etc.) is really more efficient to write and run and should be preffered to
+systematic complete integration tests. Note that you still have to provide, at least, one integration test in order to verify mappings and complete
+chain.
+  
+**Create correponding method in controller to call this new service layer**.
+
+- Implement a new method API to affect a task to a user that call ``taskService`` method. This API could be reached at ``/api/task/1/user/1`` on a 
+  ``PUT`` request in order to affect user 1 to task 1.
+
+You can test in your browser (or, better, add a test in ``TaskControllerTest``) that the new API is operational.
