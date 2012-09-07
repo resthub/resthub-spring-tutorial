@@ -228,7 +228,7 @@ Step 4: Users own tasks
 **Prerequisites** : you can find some prerequisites and reference implementation of ``NotificationService`` and ``MockConfiguration`` in
 `<http://github.com/resthub/resthub-spring-training/tree/step4-prerequisites>`_
 
-**Solution** : solution can be retrived in `<http://github.com/resthub/resthub-spring-training/tree/step4-solution>`_
+**Solution** : solution can be retrieved in `<http://github.com/resthub/resthub-spring-training/tree/step4-solution>`_
 
 Implement a new domain model ``User`` containing a name and an email and owning tasks:
 
@@ -244,12 +244,12 @@ Modify ``TaskInitializer`` in order to provide some sample users associated to t
 Don't forget to add a userRepository if needed and declare your initializer as Transactional 
 `documentation <http://static.springsource.org/spring/docs/3.1.x/spring-framework-reference/html/transaction.html#transaction-declarative-annotations>`_ !
 
-Be caution with potential infinite JSON serialization. Ignore tasks lists serialization in JSON user serialization.
+Be caution with potential infinite JSON serialization. Ignore tasks lists serialization in JSON user serialization (``@JsonIgnore``).
 
-Check on your browser that User API `<http://localhost:8080/api/user>`_ works and provide simple CRUD and that `<http://localhost:8080/api/task>`_ still work.
+Check on your browser that User API `<http://localhost:8080/api/user>`_ works and provides simple CRUD and that `<http://localhost:8080/api/task>`_ still works.
 
 You can thus add domain models and provide for each one a simple CRUD API whithout doing nothing but defining empty repositories and controllers.
-But if you have more than simple CRUD needs, resthub provides also a generic **Service layer** that could be extended to fit your business needs.
+But if you have more than simple CRUD needs, resthub provides also a generic **Service layer** that could be extended to fit your business needs: 
 
 **Create a new dedicated service for business user management**: 
 
@@ -263,11 +263,12 @@ But if you have more than simple CRUD needs, resthub provides also a generic **S
   
 Check that your REST interface is still working :-)
 
-The idea is now to **add a method that affect a user to a task** based on user and task ids. During affectation, the user should be notified that a new task 
-has been affected and, if exists, the old affected user should be notified that he loosed an affectation. These business operations should be implemented in service layer: 
+The idea is now to **add a method that affects a user to a task** based on user and task ids. During affectation, the user should be notified that a new task 
+has been affected and, if exists, the old affected user should be notified that his affectation was removed. 
+These business operations should be implemented in service layer: 
 
 - create method ``affectTask`` in ``TaskService`` interface and implement it in ``TaskServiceImpl``. Notification simulation should be performed by implementing a custom ``NotificationService`` that simply
-  log the event (you can also get the implementation from our repo in step4 solution). It is important to have an independant service (for mocking - see below - purposes)
+  logs the event (you can also get the implementation from our repo in step4 solution). It is important to have an independant service (for mocking - see below - purposes)
   and you should not simply log in your new method.
 
 .. code-block:: java
@@ -278,12 +279,12 @@ has been affected and, if exists, the old affected user should be notified that 
    // TaskService
    Task affectTask(Long taskId, Long userId);
    
-- In ``affectTask`` implementation, validate parameters to ensure that both userId and taskId are not null and correspond to valid objects 
+- In ``affectTask`` implementation, validate parameters to ensure that both userId and taskId are not null and correspond to existing objects 
   (see `documentation <http://static.springsource.org/spring/docs/3.0.x/javadoc-api/org/springframework/util/Assert.html>`_).
 - Tip : You will need to manipulate userRepository in TaskService ...
-- Tip 2 : You don't even have to call repository.save due to Transactional behaviour of your service
+- Tip 2 : You don't even have to call ``repository.save()`` due to Transactional behaviour of your service
   (see `documentation <http://static.springsource.org/spring/docs/3.1.x/spring-framework-reference/html/transaction.html#transaction-declarative-annotations>`_).
-- Tip 3 : Maybe you should consider to implement equals and hashCode methods for User & Task
+- Tip 3 : Maybe you should consider to implement ``equals()`` and ``hashCode()`` methods for User & Task
    
 **Test your new service**
    
@@ -291,7 +292,7 @@ We will now write an integration test for our new service:
 
 Create a new ``TaskServiceIntegrationTest`` integration test in ``src/test/org/resthub/training/service/integration``. This test should extend ``org.resthub.test.common.AbstractTest``.
 This makes this test **aware of spring context but non transactional** because testing a service should be done in a non transactional way. This is indeed the
-way in which the service will be called (e.g. by controller). The repository test should extend ``org.resthub.test.common.AbstractTransactionalTest`` to be runned
+way in which the service will be called (e.g. by controller). The repository test should extend ``org.resthub.test.common.AbstractTransactionalTest`` to be run
 in a transactional context, as done by service.
 
 This test should perform an unique operation:
