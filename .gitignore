@@ -1,3 +1,7 @@
-_output
-_build
-*/.idea/*
+_*
+conf.py
+make.bat
+Makefile
+.idea*
+*target
+*.iml
