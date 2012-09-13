@@ -1,7 +1,4 @@
-_*
-conf.py
-make.bat
-Makefile
+_build
 .idea*
 *target
 *.iml
