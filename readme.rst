@@ -30,7 +30,7 @@ Step 1: Initialization
    - Git installed : `<http://git-scm.com/downloads>`_
    - Maven installed : `<http://maven.apache.org/download.html>`_
    
-**Solution** : you can find solution at `<http://resthub.org/training/spring/step1>`_
+**Solution** : you can find solution at `<http://resthub.org/training/spring/solution.html#step-1-initialization>`_
 
 Find:
 +++++
@@ -144,4 +144,3 @@ This package contains the following sub packages and files:
 ``src/main/resources`` contains all non java source files and, in particular, your spring application context, your database configuration file and you logging configuration.
 
 ``src/test/`` contains, obviously, all you test related files and has the same structure as src/main (i.e. *java* and *resources*).
-
