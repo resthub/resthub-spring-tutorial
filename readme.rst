@@ -30,30 +30,72 @@ Step 1: Initialization
    - Git installed : `<http://git-scm.com/downloads>`_
    - Maven installed : `<http://maven.apache.org/download.html>`_
    
-**Solution** : solution can be retrived in `<http://github.com/resthub/resthub-spring-training/tree/step1-solution>`_
+**Solution** : you can find solution at `<http://resthub.org/training/spring/step1>`_
 
-- **Get resthub archetype:**
+Find:
++++++
 
-As described in `Resthub documentation <http://resthub.org/2/getting-started.html>`_, create your local project by executing 
-``mvn archetype:generate -DarchetypeCatalog=http://nexus.pullrequest.org/content/repositories/releases/`` in your `training` directory.
+1. **Resthub2 getting started guide**
 
-   - When **archetype** prompt, choose `1`: `org.resthub:resthub-jpa-webservice-archetype`. or 2 if you want also that a basic resthub-backbone-stack project
-     will be generated. Enter
-   - When **groupId** prompt, choose your `groupId`: `org.resthub.training` or whatever. Enter
-   - When **artifactId** prompt, choose your `artifactId`: `jpa-webservice` or whatever. Enter
-   - When **version** and **package** prompt, Enter.
-   - Confirm by typing 'Y'. Enter
+    see `<http://resthub.org/2/getting-started.html>`_
 
-You now have a `ready-to-code` sample resthub-spring project. Congrats !
+2. **Resthub2 documentation for Spring stack**
 
-To finish step 1, run ``mvn jetty:run`` from your `training/jpa-webservice` directory. Jetty should launch your application
-and says: 
+    see `<http://resthub.org/2/spring-stack.html>`_
 
-.. code-block:: script
+3. **Resthub2 javadoc site**
 
-   [INFO] Started Jetty Server
+    see `<http://jenkins.pullrequest.org/job/resthub-spring-stack-master/javadoc>`_
+    
+4. **List of Resthub2 underlying frameworks and corresponding documentation**
 
-Check on your browser that `<http://localhost:8080/api/sample>`_ works and display XML representation for a sample object with id 1.
+    - Maven: `complete reference <http://www.sonatype.com/books/mvnref-book/reference/public-book.html>`_
+    - Spring 3.1: `reference manual <http://static.springsource.org/spring/docs/3.1.x/spring-framework-reference/html>`_ and `Javadoc <http://static.springsource.org/spring/docs/3.1.x/javadoc-api/>`_
+    - Spring Data: `reference <http://www.springsource.org/spring-data>`_
+        - Spring Data JPA: `reference <http://static.springsource.org/spring-data/data-jpa/docs/current/reference/html/>`_ and `Javadoc <http://static.springsource.org/spring-data/data-jpa/docs/current/api/>`_
+        - Spring Data MongoDB: `reference <http://static.springsource.org/spring-data/data-mongodb/docs/current/reference/html/>`_ and `Javadoc <http://static.springsource.org/spring-data/data-mongodb/docs/current/api/>`_
+    - Hibernate ORM and JPA : `reference <http://docs.jboss.org/hibernate/orm/4.1/manual/en-US/html_single/>`_ and `Javadoc <http://docs.jboss.org/hibernate/orm/4.1/javadocs/>`_
+    - Spring MVC 3.1: `reference <http://static.springsource.org/spring-data/data-mongodb/docs/current/reference/html/>`_
+    - Spring MVC Router: `reference <https://github.com/resthub/springmvc-router>`_
+    - Jackson 2.0: `reference <http://wiki.fasterxml.com/JacksonDocumentation>`_ and `Javadoc <http://wiki.fasterxml.com/JacksonJavaDocs>`_
+    - AsyncHttpClient: `reference <https://github.com/sonatype/async-http-client>`_ and `Javadoc <http://sonatype.github.com/async-http-client/apidocs/reference/packages.html>`_
+    - SLF4J: `reference <http://www.slf4j.org/manual.html>`_
+    - Logback: `reference <http://logback.qos.ch/manual/index.html>`_
+    
+Do:
++++
+
+1. **Generate a Resthub2 template project structure**
+
+   You can choose which template to use : pure Java Spring server template or Server + Client template if you plan to provide a RIA client
+   for your app based on `Resthub Spring Stack`
+   
+   Choose groupId `org.resthub.training`, artifactId `jpa-webservice`, package `org.resthub.training` and version `1.0-SNAPSHOT`.
+   
+       As described in `Resthub documentation <http://resthub.org/2/getting-started.html>`_, create your local project by executing 
+       ``mvn archetype:generate -DarchetypeCatalog=http://nexus.pullrequest.org/content/repositories/releases/`` in your `training` directory.
+
+       - When **archetype** prompt, choose `1`: `org.resthub:resthub-jpa-webservice-archetype`. or 2 if you want also that a basic resthub-backbone-stack project
+         will be generated. Enter
+       - When **groupId** prompt, choose your `groupId`: `org.resthub.training`. Enter
+       - When **artifactId** prompt, choose your `artifactId`: `jpa-webservice`. Enter
+       - When **version** and **package** prompt, Enter.
+       - Confirm by typing 'Y'. Enter
+
+   You now have a `ready-to-code` sample resthub-spring project. Congrats !
+
+2. **Run your project with mvn**
+
+    Run ``mvn jetty:run`` from your `training/jpa-webservice` directory. Jetty should launch your application
+    and says: 
+
+    .. code-block:: script
+
+       [INFO] Started Jetty Server
+
+3. **Check on your browser that your project works that the response is an XML serialization of a Sample object with id 1**.
+
+    Check `<http://localhost:8080/api/sample>`_
 
 Let's take a look at the generated project. Its structure is:
 
@@ -90,11 +132,11 @@ This package contains the following sub packages and files:
 - **controller**: This package contains all your application controllers, i.e. your web API. In the generated sample, the archetype provided
   you a SampleController that simply extend ``RepositoryBasedRestController`` and apply its behaviour to the *Sample* model and
   *SampleRepository*: ``SampleController extends RepositoryBasedRestController<Sample, Long, SampleRepository>``. This generic ``RepositoryBasedRestController``
-  provides basic CRUD functionalities: see `documentation <http://jenkins.pullrequest.org/job/resthub-spring-stack-master/javadoc/org/resthub/web/controller/ServiceBasedRestController.html>`_
+  provides basic CRUD functionalities: see Resthub2 documentation for details.
 - **model**: This package contains all you domain models.
 - **repository**: This package contains your repositories, i.e. classes that provide methods to manipulate, persist and retrieve your objects from your JPA
   manager (and so your database). In the generated sample, the archetype provided you a SampleRepository that simply extend Spring-Data ``JpaRepository``.
-  for behaviour, see `documentation <http://static.springsource.org/spring-data/data-jpa/docs/current/api/org/springframework/data/jpa/repository/JpaRepository.html>`_
+  for behaviour, see Spring-Data JPA documentation for details.
 - **initializers**: Initializers are special classes executed at application startup to setup your webapp. ``WebappInitializer`` load your spring application contexts,
   setup filters, etc. (all actions that you previously configured in your web.xml). The archetype provided you a ``SampleInitializer`` to setup sepcific domain model
   initializations such as data creation.
@@ -107,56 +149,78 @@ This package contains the following sub packages and files:
 Step 2: Customize Model
 -----------------------
 
-**Solution** : solution can be retrived in `<http://github.com/resthub/resthub-spring-training/tree/step2-solution>`_
+**Solution** : you can find solution at `<http://resthub.org/training/spring/step2>`_
 
 Let's start to customize the project generated by our archetype.
 
 We are going to create Contoller, Repository and, obviously Model for our Task object. We'll also adapt our Initializer in order to provide
-some sample data at application startup. So, let's replace the generated `Sample` related objects with `Task`: 
+some sample data at application startup. 
 
-- rename ``org.resthub.training.model.Sample`` class to ``org.resthub.training.model.Task``
-- replace ``name`` attribut by ``title``
-- add a ``description`` attribute and corresponding getter and setter
-- rename ``org.resthub.training.repository.SampleRepository`` class to ``org.resthub.training.repository.TaskRepository``
-- rename ``org.resthub.training.controller.SampleController`` class to ``org.resthub.training.controller.TaskController``
-- rename ``org.resthub.training.controller.SampleInitializer`` class to ``org.resthub.training.controller.TaskInitializer``
-- check that all references to older Sample classes have been replaced
-- in ``TaskController`` and  ``TaskInitializer`` rename ``@RequestMapping`` & ``@Named`` annotation string values from sample to task  
+Do:
++++
 
-re-run ``mvn jetty:run`` from your `training/jpa-webservice` directory. 
+1. **Replace the generated `Sample` related objects with `Task`**
 
-Check on your browser that `<http://localhost:8080/api/task>`_ works and display XML representation for a sample object with id 1.
-Note that this service returns the list of all existing tasks wrapped into a Pagination object `PageImpl`.
+    - rename ``org.resthub.training.model.Sample`` class to ``org.resthub.training.model.Task``
+    - replace ``name`` attribut by ``title``
+    - add a ``description`` attribute and corresponding getter and setter
 
-We can also test that:
+2. **Modify all others components considering this modification**
 
-- a ``GET`` request on `<http://localhost:8080/api/task/1>`_ **returns a single Task** object with id 1, 
-- a ``PUT`` request on the same URL with ContentType ``application/json`` and body : 
+    - rename ``org.resthub.training.repository.SampleRepository`` class to ``org.resthub.training.repository.TaskRepository``
+    - rename ``org.resthub.training.controller.SampleController`` class to ``org.resthub.training.controller.TaskController``
+    - rename ``org.resthub.training.controller.SampleInitializer`` class to ``org.resthub.training.controller.TaskInitializer``
+    - in ``TaskController`` and  ``TaskInitializer`` rename ``@RequestMapping`` & ``@Named`` annotation string values from sample to task  
+    - check that all references to older Sample classes have been replaced
 
-.. code-block:: javascript
+3. **Check that your new API works**
 
-   {
-      "id": 1,
-      "name": "testTask1",
-      "description": "new description"
-   }
-   
-**update the Task** 1 with the new description
+    re-run ``mvn jetty:run`` from your `training/jpa-webservice` directory. 
+
+    Check on your browser that `<http://localhost:8080/api/task>`_ works and display XML representation for a sample object with id 1.
+
+Answer:
++++++++
+
+1. **How is wrapped the list of all existing tasks ?**
+    
+    A ``GET`` request on `<http://localhost:8080/api/task?page=all>`_ shows that the list of all existing tasks is **wrapped into a Pagination object** `PageImpl`.
+    
+2. **How to get a single task ?**
+    
+    A ``GET`` request on `<http://localhost:8080/api/task/1>`_ **returns a single Task** object with id 1, 
+    
+3. **How to update an existing task ? Update task 1 to add a description** ``new description``
+    
+    A ``PUT`` request on `<http://localhost:8080/api/task/1>`_ with ContentType ``application/json`` and body : 
+
+    .. code-block:: javascript
+
+       {
+          "id": 1,
+          "title": "testTask1",
+          "description": "new description"
+       }
+
+4. **How to delete a task ?**       
   
-- a ``DELETE`` request on the same URL **delete the Task** (check with a GET on `<http://localhost:8080/api/task>`_).
-- a ``POST`` request on `<http://localhost:8080/api/task>`_ with ContentType ``application/json`` and body **creates a new Task** : 
+    A ``DELETE`` request on `<http://localhost:8080/api/task/1>`_ **delete the Task** (check with a GET on `<http://localhost:8080/api/task>`_).
+    
+5. **How to create a task ?**  
+    
+    A ``POST`` request on `<http://localhost:8080/api/task>`_ with ContentType ``application/json`` and body: 
 
-.. code-block:: javascript
+    .. code-block:: javascript
 
-   {
-      "name": "new test Task",
-      "description": "new description"
-   }
+       {
+          "title": "new test Task",
+          "description": "new description"
+       }
 
 Step 3: Customize Controller
 ----------------------------
 
-**Solution** : solution can be retrieved in `<http://github.com/resthub/resthub-spring-training/tree/step3-solution>`_
+**Solution** : you can find solution at `<http://resthub.org/training/spring/step3>`_
 
 We now have a basic REST interface uppon our Task model object providing default methods and behaviour implemented by resthub.
 
@@ -165,10 +229,13 @@ returns a paginated list containing all elements in order to provide a consisten
 
 In our case, we want a ``findAll`` implementation that returns a simple non paginated list of tasks: 
 
-Open your ``TaskController.java`` and create a new method called ``findAllNonPaginated`` and mapped to ``/api/task?page=no``. Implement this
-using repository findAll method (see `documentation <http://static.springsource.org/spring-data/data-jpa/docs/current/api/org/springframework/data/jpa/repository/JpaRepository.html#findAll()>`_).
+Do:
++++
 
-Check on your browser that `<http://localhost:8080/api/task?page=no>`_ works and display a simple list of tasks, without pagination:
+1. **Modify** ``TaskController.java`` **to add a new method called** ``findAllNonPaginated``  **with no parameter mapped to** ``/api/task?page=no``.
+
+   Implement this using existing repository method (see `Spring Data JPA documentation <http://static.springsource.org/spring-data/data-jpa/docs/current/api/>`_).
+   Check on your browser that `<http://localhost:8080/api/task?page=no>`_ works and display a simple list of tasks, without pagination.
 
 .. code-block:: javascript
 
@@ -186,38 +253,95 @@ Check on your browser that `<http://localhost:8080/api/task?page=no>`_ works and
        "description": null
    }]
 
-**Note**: We cannot simply override ``/api/task?page=all`` method because mappings are currently defined in interface ``RestController`` 
-(see `documentation <http://jenkins.pullrequest.org/job/resthub-spring-stack-master/javadoc/org/resthub/web/controller/RestController.html>`_)
-and *Spring MVC* does not accept that a path appears twice.
+
+Implementation is done with using repository findAll method (see `<http://static.springsource.org/spring-data/data-jpa/docs/current/api/org/springframework/data/jpa/repository/JpaRepository.html#findAll()>`_).
+    
+    .. code-block:: Java
+    
+        @RequestMapping(method = RequestMethod.GET, params = "page=no")
+        @ResponseBody
+        public List<Task> findAllNonPaginated() {
+            return this.repository.findAll();
+        }
+
+
+    **Note**: We cannot simply override ``/api/task?page=all`` method because mappings are currently defined in interface ``RestController`` 
+    (see `documentation <http://jenkins.pullrequest.org/job/resthub-spring-stack-master/javadoc/org/resthub/web/controller/RestController.html>`_)
+    and *Spring MVC* does not accept that a path appears twice.
+    
+    see `<https://github.com/resthub/resthub-spring-training/tree/step3-solution>`_ for complete solution.
 
 Test your controller
 ++++++++++++++++++++
 
-Resthub provide some testing tooling : `<http://resthub.org/2/spring-stack.html#testing>`_
+1. **Add dependency to use Resthub2 testing tools**
 
-We are going to test our new controller ``findAllNonPaginated`` method: 
+    .. code-block:: xml
 
-Add resthub-test dependency in your pom.xml:
-
-.. code-block:: xml
-
-   <dependency>
-      <groupId>org.resthub</groupId>
-      <artifactId>resthub-test</artifactId>
-      <version>${resthub.spring.stack.version}</version>
-      <scope>test</scope>
-   </dependency>
+       <dependency>
+          <groupId>org.resthub</groupId>
+          <artifactId>resthub-test</artifactId>
+          <version>${resthub.spring.stack.version}</version>
+          <scope>test</scope>
+       </dependency>
    
-In ``src/test/org/resthub/training``, add a ``controller`` directory and create a ``TaskControllerTest`` inside. 
+2. In ``src/test/org/resthub/training``, add a ``controller`` directory and create a ``TaskControllerTest`` inside. 
+   We first want to make an **integration test** of our controller. i.e. a test that need to run and embedded servlet container.
+   **Implement a new** ``findAllNonPaginated`` **test method that creates some tasks and call controller.** 
+   
+   Verify that the new controller returns a response that is not empty, does not contain pagination and contains the created tasks.
 
-We first want to make an **integration test** of our controller:
+    Our test ``TaskControllerTest`` should extend resthub ``AbstractWebTest`` 
+    (see `documentation <http://jenkins.pullrequest.org/job/resthub-spring-stack-master/javadoc/org/resthub/test/common/AbstractWebTest.html>`_)
+    
+    .. code-block:: Java
+    
+        public class TaskControllerTest extends AbstractWebTest {
+            protected String rootUrl() {
+                return "http://localhost:8080/api/task";
+            }
 
-Make your ``TaskControllerTest`` extend resthub ``AbstractWebTest`` 
-(see `documentation <http://jenkins.pullrequest.org/job/resthub-spring-stack-master/javadoc/org/resthub/test/common/AbstractWebTest.html>`_)
-and implement a new ``findAllNonPaginated`` test method that creates some tasks and call controller. 
 
-Verify that the new controller: 
+            @Test
+            public void testCreateResource() throws IllegalArgumentException, InterruptedException, 
+                                                    ExecutionException, IOException {
+                Client httpClient = new Client();
+                httpClient.url(rootUrl()).xmlPost(new Task("task1")).get();
+                httpClient.url(rootUrl()).xmlPost(new Task("task2")).get();
+                String responseBody = httpClient.url(rootUrl()).setQueryParameter("page", "no")
+                        .getJson().get().getBody();
+                Assertions.assertThat(responseBody).isNotEmpty();
+                Assertions.assertThat(responseBody).doesNotContain("\"content\":2");
+                Assertions.assertThat(responseBody).contains("task1");
+                Assertions.assertThat(responseBody).contains("task2");
+            }
+        }
+       
+    see `<https://github.com/resthub/resthub-spring-training/tree/step3-solution>`_ for complete solution.
 
-- returns a response that is not empty, 
-- does not contain pagination
-- contains the created tasks.
+3. **Run test and check it passes**
+
+   .. code-block:: script
+
+        mvn -Dtest=TaskControllerTest#testCreateResource test
+        
+        -------------------------------------------------------
+         T E S T S
+        -------------------------------------------------------
+        Running org.resthub.training.controller.TaskControllerTest
+        
+        ....
+        
+        Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 15.046 sec
+
+        Results :
+
+        Tests run: 1, Failures: 0, Errors: 0, Skipped: 0
+
+        [INFO] ------------------------------------------------------------------------
+        [INFO] BUILD SUCCESS
+        [INFO] ------------------------------------------------------------------------
+        [INFO] Total time: 24.281s
+        [INFO] Finished at: Thu Sep 13 14:27:44 CEST 2012
+        [INFO] Final Memory: 13M/31M
+        [INFO] ------------------------------------------------------------------------
