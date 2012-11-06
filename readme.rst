@@ -1,7 +1,7 @@
 RESThub Spring stack Tutorial
 =============================
 
-This tutorial will help you to get an overview of resthub-spring-stack and its components and to take advantage of this framework and its tools.
+This tutorial will help you to get an overview of resthub-spring-stack.
 
 Problem description
 -------------------
@@ -69,6 +69,7 @@ Let's take a look at the generated project. Its structure is:
    |   |    |                       | --- repository
    |   |    |                       |     | --- SampleRepository.java
    |   |    |                       | --- SampleInitializer.java
+   |   |    |                       | --- WebAppConfigurer.java
    |   |    |                       | --- WebAppInitializer.java
    |   |    | --- resources
    |   |          | --- applicationContext.xml
@@ -92,13 +93,10 @@ This package contains the following sub packages and files:
 - **repository**: This package contains your repositories, i.e. classes that provide methods to manipulate, persist and retrieve your objects from your JPA
   manager (and so your database). In the generated sample, the archetype provided you a SampleRepository that simply extend Spring-Data ``JpaRepository``.
   for behaviour, see Spring-Data JPA documentation for details.
-- **initializers**: Initializers are special classes executed at application startup to setup your webapp. ``WebappInitializer`` load your spring application contexts,
-  setup filters, etc. (all actions that you previously configured in your web.xml). The archetype provided you a ``SampleInitializer`` to setup sepcific domain model
-  initializations such as data creation.
-  
-``src/main/resources`` contains all non java source files and, in particular, your spring application context, your database configuration file and you logging configuration.
-
-``src/test/`` contains, obviously, all you test related files and has the same structure as src/main (i.e. *java* and *resources*).
+- **initializers**: initializers are special classes executed at application startup to setup your webapp. ``WebappInitializer`` load your spring application contexts, setup filters, etc. (all actions that you previously configured in your web.xml). The archetype provided you a ``SampleInitializer`` to setup sepcific domain model initializations such as data creation.
+- **configurers**: configurers are using Spring Java Config to allow you define you Spring beans and your Spring configuration. They contains the same information than your old applicationContext.xml files, but described with Java code in the ``WebAppConfigurer`` class.
+- ``src/main/resources`` contains all non java source files and, in particular, your spring application context (kept for some parts that still need an applicationContext.xml file like Spring Security), your database configuration file and you logging configuration.
+- ``src/test/`` contains, obviously, all you test related files and has the same structure as src/main (i.e. *java* and *resources*).
 
 
 Step 2: Customize Model
@@ -138,44 +136,32 @@ Step 3: Customize Controller
 
 We now have a basic REST interface uppon our Task model object providing default methods and behaviour implemented by resthub.
 
-Let's suppose that the current findall : `<http://localhost:8080/api/task?page=all>`_ does not match our needs: the current implementation
-returns a paginated list containing all elements in order to provide a consistent API between a *find all* and a *find paginated*.
-
-In our case, we want a ``findAll`` implementation that returns a simple non paginated list of tasks: 
+Let's try to implement a ``findByName`` implementation that returns a Task based on it name: 
 
 Do:
 +++
 
-1. **Modify** ``TaskController.java`` **to add a new method called** ``findAllNonPaginated``  **with no parameter mapped to** ``/api/task?page=no``.
+1. **Modify** ``TaskController.java`` **to add a new method called** ``findByName`` **with a name parameter mapped to** ``/api/task/name/{name}``.
 
    **Tip:** Consider using ``@ResponseBody`` annotation (see `<http://static.springsource.org/spring/docs/current/spring-framework-reference/html/mvc.html#mvc-ann-responsebody>`_)
-   and request params mapping (see `<http://static.springsource.org/spring/docs/current/spring-framework-reference/html/mvc.html#mvc-ann-requestmapping-params-and-headers>`_).
 
-   Implement this using existing repository method (see `Spring Data JPA documentation <http://static.springsource.org/spring-data/data-jpa/docs/current/api/>`_).
-   Check on your browser that `<http://localhost:8080/api/task?page=no>`_ works and display a simple list of tasks, without pagination.
+   Implement this by adding a new repository method (see `Spring Data JPA documentation <http://static.springsource.org/spring-data/data-jpa/docs/current/api/>`_).
+   Check on your browser that `<http://localhost:8080/api/task/name/{name}>`_ with an existing name works.
    
    e.g.
 
 .. code-block:: javascript
 
-   [{
+   {
        "id": 1,
        "name": "testTask1",
-       "description": null
-   }, {
-       "id": 2,
-       "name": "testTask2",
-       "description": null
-   }, {
-       "id": 3,
-       "name": "testTask3",
-       "description": null
-   }]
+       "description": "bla bla"
+   }
 
 Test your controller
 ++++++++++++++++++++
 
-We are going to test our new controller ``findAllNonPaginated`` method.
+We are going to test our new controller ``findByName`` method.
 
 Find:
 #####
@@ -188,8 +174,7 @@ Do:
 1. **Add dependency to use Resthub2 testing tools** 
 2. In ``src/test/org/resthub/training``, add a ``controller`` directory and create a ``TaskControllerTest`` inside. 
    We first want to make an **integration test** of our controller. i.e. a test that need to run and embedded servlet container.
-   **Implement a new** ``findAllNonPaginated`` **test method that creates some tasks, call our new non paginated REST interface
-   and check that the JSON response does not contain pagination-related String 'content'.** 
+   **Implement a new** ``testFindByName`` **test method that creates some tasks, call our new REST interface in order to find taks by name and check that the JSON response in order to be sure that it works as expected** 
 3. **Run test and check it passes**
     
 Step 4: Users own tasks
@@ -197,8 +182,6 @@ Step 4: Users own tasks
 
 **Prerequisites** : you can find some prerequisites and reference implementation of ``NotificationService`` and ``MockConfiguration`` at
 `<http://github.com/resthub/resthub-spring-training/tree/step4-prerequisites>`_
-
-**Solution** : you can find solution at `<spring/solution.html#step-4-users-own-tasks>`_
 
 Find:
 +++++
@@ -375,8 +358,6 @@ You can test in your browser (or, better, add a test in ``TaskControllerTest``) 
 
 Step 5: Validate your beans and embed entities
 ----------------------------------------------
-
-**Solution** : you can find solution at `<spring/solution.html#step-5-validate-your-beans-and-embed-entities>`_
 
 Finally, we want to add validation constraints to our model. This could be done by using BeanValidation (JSR303 Spec) and its reference
 implementation: Hibernate Validator. see `documentation <http://docs.jboss.org/hibernate/validator/4.1/reference/en-US/html_single/>`_
