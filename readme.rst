@@ -766,7 +766,7 @@ Do:
 .. code-block:: java
 
    @Configuration
-   @ImportResource("classpath*:applicationContext.xml")
+   @ImportResource("classpath*:resthubContext.xml", "classpath*:applicationContext.xml")
    @Profile("test")
    public class MocksConfiguration {
        @Bean(name = "notificationService")
@@ -794,7 +794,7 @@ This class allows to define a mocked alias bean to notificationService bean for 
        .. code-block:: java
        
           @ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = MocksConfiguration.class)
-          @ActiveProfiles("test")
+          @ActiveProfiles({"test", "resthub-jpa"})
           public class TaskServiceIntegrationTest extends AbstractTest {
           
               @Inject
