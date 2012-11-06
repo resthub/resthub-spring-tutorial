@@ -20,7 +20,6 @@ public class TaskController extends RepositoryBasedRestController<Task, Long, Ta
         this.repository = repository;
     }
 
-    @Override
     public Long getIdFromResource(Task resource) {
         return resource.getId();
     }

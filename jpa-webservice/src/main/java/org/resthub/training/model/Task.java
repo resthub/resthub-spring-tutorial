@@ -8,16 +8,16 @@ import javax.persistence.Id;
 public class Task {
 
     private Long id;
-    private String title;
+    private String name;
     private String description;
 
     public Task() {
         super();
     }
 
-    public Task(String title) {
+    public Task(String name) {
         super();
-        this.title = title;
+        this.name = name;
     }
 
     @Id
@@ -30,12 +30,12 @@ public class Task {
         this.id = id;
     }
 
-    public String getTitle() {
-        return title;
+    public String getName() {
+        return name;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getDescription() {
