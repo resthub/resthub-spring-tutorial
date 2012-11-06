@@ -42,8 +42,8 @@ public class Task {
 
     @NotNull
     @NotEmpty
-    public String getTitle() {
-        return title;
+    public String getName() {
+        return name;
     }
 
     public void setName(String name) {

@@ -1,7 +1,7 @@
 package org.resthub.training.repository.integration;
 
 import org.fest.assertions.api.Assertions;
-import org.resthub.test.common.AbstractTest;
+import org.resthub.test.AbstractTest;
 import org.resthub.training.model.Address;
 import org.resthub.training.model.User;
 import org.resthub.training.repository.UserRepository;
@@ -12,7 +12,7 @@ import org.testng.annotations.Test;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-@ActiveProfiles("test")
+@ActiveProfiles({"resthub-jpa", "test"})
 public class UserRepositoryIntegrationTest extends AbstractTest {
 
     @Inject

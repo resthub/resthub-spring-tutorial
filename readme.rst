@@ -1032,8 +1032,8 @@ Do:
 
                 @NotNull
                 @NotEmpty
-                public String getTitle() {
-                    return title;
+                public String getName() {
+                    return name;
                 }
 
                 ...
@@ -1165,7 +1165,7 @@ Do:
    
     .. code-block:: java
     
-        @ActiveProfiles("test")
+        @ActiveProfiles({"resthub-jpa", "test"})
         public class UserRepositoryIntegrationTest extends AbstractTest {
 
             @Inject
