@@ -27,7 +27,6 @@ public class UserController extends RepositoryBasedRestController<User, Long, Us
         this.repository = repository;
     }
 
-    @Override
     public Long getIdFromResource(User resource) {
         return resource.getId();
     }

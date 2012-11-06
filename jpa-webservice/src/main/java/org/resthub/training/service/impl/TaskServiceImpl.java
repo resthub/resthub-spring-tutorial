@@ -40,6 +40,10 @@ public class TaskServiceImpl extends CrudServiceImpl<Task, Long, TaskRepository>
         this.notificationService = notificationService;
     }
 
+    public Task findByName(String name) {
+        return this.repository.findByName(name);
+    }
+
     @Transactional(readOnly = false)
     @Override
     public Task affectTaskToUser(Long taskId, Long userId) {
@@ -55,12 +59,12 @@ public class TaskServiceImpl extends CrudServiceImpl<Task, Long, TaskRepository>
 
         if (task.getUser() != null && task.getUser() != user) {
             if (task.getUser().getEmail() != null) {
-                this.notificationService.send(task.getUser().getEmail(), "The task " + task.getTitle() + " has been reaffected");
+                this.notificationService.send(task.getUser().getEmail(), "The task " + task.getName() + " has been reaffected");
             }
         }
 
         if (user.getEmail() != null) {
-            this.notificationService.send(user.getEmail(), "The task " + task.getTitle() + " has been affected to you");
+            this.notificationService.send(user.getEmail(), "The task " + task.getName() + " has been affected to you");
         }
 
         task.setUser(user);

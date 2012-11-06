@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-import java.util.List;
 
 @Controller
 @RequestMapping(value = "/api/task")
@@ -24,15 +23,14 @@ public class TaskController extends ServiceBasedRestController<Task, Long, TaskS
         this.service = service;
     }
 
-    @Override
     public Long getIdFromResource(Task resource) {
         return resource.getId();
     }
 
-    @RequestMapping(method = RequestMethod.GET, params = "page=no")
+    @RequestMapping(value = "name/{name}", method = RequestMethod.GET)
     @ResponseBody
-    public List<Task> findAllNonPaginated() {
-        return this.service.findAll();
+    public Task findByName(@PathVariable String name) {
+        return this.service.findByName(name);
     }
 
     @RequestMapping(value = "{taskId}/user/{userId}", method = RequestMethod.PUT)

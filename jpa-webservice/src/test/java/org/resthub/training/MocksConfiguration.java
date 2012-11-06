@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Profile;
 import static org.mockito.Mockito.mock;
 
 @Configuration
-@ImportResource("classpath*:applicationContext.xml")
+@ImportResource({"classpath*:resthubContext.xml", "classpath*:applicationContext.xml"})
 @Profile("test")
 public class MocksConfiguration {
 

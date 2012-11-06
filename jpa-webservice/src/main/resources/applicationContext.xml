@@ -8,11 +8,8 @@
                            http://www.springframework.org/schema/context/spring-context.xsd
 
 
-                           http://www.springframework.org/schema/data/jpa 
+                           http://www.springframework.org/schema/data/jpa
                            http://www.springframework.org/schema/data/jpa/spring-jpa.xsd">
-
-    <import resource="classpath*:resthubJpaContext.xml"/>
-    <import resource="classpath*:resthubWebServerContext.xml"/>
 
     <context:component-scan base-package="org.resthub.training"/>
     <jpa:repositories base-package="org.resthub.training.repository"/>

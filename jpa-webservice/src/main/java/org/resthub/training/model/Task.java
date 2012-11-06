@@ -12,7 +12,7 @@ import javax.validation.constraints.NotNull;
 public class Task {
 
     private Long id;
-    private String title;
+    private String name;
     private String description;
     private User user;
 
@@ -20,9 +20,9 @@ public class Task {
         super();
     }
 
-    public Task(String title) {
+    public Task(String name) {
         super();
-        this.title = title;
+        this.name = name;
     }
 
     public Task(String name, User user) {
@@ -46,8 +46,8 @@ public class Task {
         return title;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getDescription() {
