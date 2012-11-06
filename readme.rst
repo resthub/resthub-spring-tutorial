@@ -328,6 +328,8 @@ Test your controller
         [INFO] Finished at: Thu Sep 13 14:27:44 CEST 2012
         [INFO] Final Memory: 13M/31M
         [INFO] ------------------------------------------------------------------------
+        
+        
 Step 4: Users own tasks
 -----------------------
 
