@@ -30,8 +30,6 @@ Step 1: Initialization
    - Git installed : `<http://git-scm.com/downloads>`_
    - Maven installed : `<http://maven.apache.org/download.html>`_
    
-**Solution** : you can find solution at `<http://resthub.org/training/spring/solution.html#step-1-initialization>`_
-
 Find:
 +++++
 
