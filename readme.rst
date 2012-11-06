@@ -736,7 +736,7 @@ Do:
 .. code-block:: java
 
    @Configuration
-   @ImportResource("classpath*:applicationContext.xml")
+   @ImportResource({"classpath*:resthubContext.xml", "classpath*:applicationContext.xml"})
    @Profile("test")
    public class MocksConfiguration {
        @Bean(name = "notificationService")
@@ -764,7 +764,7 @@ This class allows to define a mocked alias bean to notificationService bean for 
        .. code-block:: java
        
           @ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = MocksConfiguration.class)
-          @ActiveProfiles("test")
+          @ActiveProfiles({"test", "resthub-jpa"})
           public class TaskServiceIntegrationTest extends AbstractTest {
           
               @Inject
@@ -799,9 +799,9 @@ This class allows to define a mocked alias bean to notificationService bean for 
                   Assertions.assertThat(task.getUser()).isEqualTo(newUser);
           
                   verify(mockedNotificationService, times(3)).send(anyString(), anyString());
-                  verify(mockedNotificationService, times(1)).send("user.email@test.org", "The task " + task.getTitle() + " has been affected to you");
-                  verify(mockedNotificationService, times(1)).send("user.email@test.org", "The task " + task.getTitle() + " has been reaffected");
-                  verify(mockedNotificationService, times(1)).send("user2.email@test.org", "The task " + task.getTitle() + " has been affected to you");
+                  verify(mockedNotificationService, times(1)).send("user.email@test.org", "The task " + task.getName() + " has been affected to you");
+                  verify(mockedNotificationService, times(1)).send("user.email@test.org", "The task " + task.getName() + " has been reaffected");
+                  verify(mockedNotificationService, times(1)).send("user2.email@test.org", "The task " + task.getName() + " has been affected to you");
               }
           }
           
@@ -963,7 +963,7 @@ You can test in your browser (or, better, add a test in ``TaskControllerTest``) 
          @Test
          public void testAffectTaskToUser() {
              Task task = this.request("api/task").xmlPost(new Task("task1")).resource(Task.class);
-             User user = this.request("api/user")).xmlPost(new User("user1")).resource(User.class);
+             User user = this.request("api/user").xmlPost(new User("user1")).resource(User.class);
              String responseBody = this.request("api/task/" + task.getId() + "/user/" + user.getId()).put("").getBody();
              Assertions.assertThat(responseBody).isNotEmpty();
              Assertions.assertThat(responseBody).contains("task1");

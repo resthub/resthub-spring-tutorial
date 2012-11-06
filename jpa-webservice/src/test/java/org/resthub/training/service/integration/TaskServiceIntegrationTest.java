@@ -1,11 +1,10 @@
 package org.resthub.training.service.integration;
 
 import org.fest.assertions.api.Assertions;
-import org.resthub.test.common.AbstractTest;
+import org.resthub.test.AbstractTest;
 import org.resthub.training.MocksConfiguration;
 import org.resthub.training.model.Task;
 import org.resthub.training.model.User;
-import org.resthub.training.repository.TaskRepository;
 import org.resthub.training.repository.UserRepository;
 import org.resthub.training.service.NotificationService;
 import org.resthub.training.service.TaskService;
@@ -22,7 +21,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = MocksConfiguration.class)
-@ActiveProfiles("test")
+@ActiveProfiles({"resthub-jpa", "test"})
 public class TaskServiceIntegrationTest extends AbstractTest {
 
     @Inject
@@ -57,8 +56,8 @@ public class TaskServiceIntegrationTest extends AbstractTest {
         Assertions.assertThat(task.getUser()).isEqualTo(newUser);
 
         verify(mockedNotificationService, times(3)).send(anyString(), anyString());
-        verify(mockedNotificationService, times(1)).send("user.email@test.org", "The task " + task.getTitle() + " has been affected to you");
-        verify(mockedNotificationService, times(1)).send("user.email@test.org", "The task " + task.getTitle() + " has been reaffected");
-        verify(mockedNotificationService, times(1)).send("user2.email@test.org", "The task " + task.getTitle() + " has been affected to you");
+        verify(mockedNotificationService, times(1)).send("user.email@test.org", "The task " + task.getName() + " has been affected to you");
+        verify(mockedNotificationService, times(1)).send("user.email@test.org", "The task " + task.getName() + " has been reaffected");
+        verify(mockedNotificationService, times(1)).send("user2.email@test.org", "The task " + task.getName() + " has been affected to you");
     }
 }

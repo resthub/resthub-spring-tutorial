@@ -1,6 +1,6 @@
 package org.resthub.training.service;
 
-import org.fest.assertions.Assertions;
+import org.fest.assertions.api.Assertions;
 import org.resthub.training.model.Task;
 import org.resthub.training.model.User;
 import org.resthub.training.repository.TaskRepository;
