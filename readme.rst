@@ -32,7 +32,6 @@ Step 1: Initialization
    - Git installed : `<http://git-scm.com/downloads>`_
    - Maven installed : `<http://maven.apache.org/download.html>`_
    
-
 Find:
 +++++
 
@@ -223,32 +222,17 @@ We now have a basic REST interface uppon our Task model object providing default
 
 Let's try to implement a ``findByName`` implementation that returns a Task based on it name: 
 
-
 Do:
 +++
 
 1. **Modify** ``TaskController.java`` **to add a new method called** ``findByName``  **with a name parameter mapped to** ``/api/task/name/{name}`` returning a single task element if exists.
+
   Implementation is done by adding a new repository findByName() method (see `<http://static.springsource.org/spring-data/data-jpa/docs/current/api/org/springframework/data/jpa/repository/JpaRepository.html#findAll()>`_) in interface.
   
   .. code-block:: Java
     
     Task findByName(String name);
   
-
-   [{
-       "id": 1,
-       "name": "testTask1",
-       "description": null
-   }, {
-       "id": 2,
-       "name": "testTask2",
-       "description": null
-   }, {
-       "id": 3,
-       "name": "testTask3",
-       "description": null
-   }]
-
 
   And in controller: 
   
@@ -257,22 +241,18 @@ Do:
     @RequestMapping(value = "name/{name}", method = RequestMethod.GET) @ResponseBody
     public Task searchByName(@PathVariable String name) {
       return this.repository.findByName(name);
-            return this.repository.findAll();
     }
 
   Check on your browser that `<http://localhost:8080/api/task/name/testTask1>`_ works and display a simple list of tasks, without pagination.
 
   .. code-block:: javascript
+
     {
       "id": 1,
       "name": "testTask1",
       "description": "bla bla"
     }
-    
 
-    **Note**: We cannot simply override ``/api/task?page=all`` method because mappings are currently defined in interface ``RestController`` 
-    (see `documentation <http://jenkins.pullrequest.org/job/resthub-spring-stack-master/javadoc/org/resthub/web/controller/RestController.html>`_)
-    and *Spring MVC* does not accept that a path appears twice.
     
 see `<https://github.com/resthub/resthub-spring-training/tree/step3-solution>`_ for complete solution.
 
@@ -315,11 +295,6 @@ Test your controller
                 Task task1 = this.request("api/task/name/task1").getJson().resource(Task.class);
                 Assertions.assertThat(task1).isNotNull();
                 Assertions.assertThat(task1.getName()).isEqualsTo("task1");
-                        .getJson().get().getBody();
-                Assertions.assertThat(responseBody).isNotEmpty();
-                Assertions.assertThat(responseBody).doesNotContain("\"content\":2");
-                Assertions.assertThat(responseBody).contains("task1");
-                Assertions.assertThat(responseBody).contains("task2");
             }
         }
        
@@ -358,7 +333,6 @@ Step 4: Users own tasks
 **Prerequisites** : you can find some prerequisites and reference implementation of ``NotificationService`` and ``MockConfiguration`` at
 `<http://github.com/resthub/resthub-spring-training/tree/step4-prerequisites>`_
 
-
 Find:
 +++++
 
@@ -367,6 +341,7 @@ Find:
     see `reference <http://docs.jboss.org/hibernate/orm/4.1/manual/en-US/html_single/>`_ and `Javadoc <http://docs.jboss.org/hibernate/orm/4.1/javadocs/>`_
     
 2. **Jackson annotations documentation**
+
     see `reference <http://wiki.fasterxml.com/JacksonAnnotations>`_
     
 3. **Resthub2 Crud Services documentation**
@@ -476,10 +451,6 @@ Do:
                 this.repository = repository;
             }
 
-            @Override
-            public Long getIdFromResource(User resource) {
-                return resource.getId();
-            }
         }
         
     see complete solution for `controller <https://github.com/resthub/resthub-spring-training/blob/step4-solution/jpa-webservice/src/main/java/org/resthub/training/controller/UserController.java>`_
@@ -558,12 +529,6 @@ But if you have more than simple CRUD needs, resthub provides also a generic **S
                 @RequestMapping(value = "name/{name}", method = RequestMethod.GET) @ResponseBody
                 public List<Todo> searchByName(@PathVariable String name) {
                   return this.repository.findByName(name);
-                }
-
-                @RequestMapping(method = RequestMethod.GET, params = "page=no")
-                @ResponseBody
-                public List<Task> findAllNonPaginated() {
-                    return this.service.findAll();
                 }
 
             }
@@ -771,7 +736,7 @@ Do:
 .. code-block:: java
 
    @Configuration
-   @ImportResource({"classpath*:resthubContext.xml", "classpath*:applicationContext.xml"})
+   @ImportResource("classpath*:resthubContext.xml", "classpath*:applicationContext.xml")
    @Profile("test")
    public class MocksConfiguration {
        @Bean(name = "notificationService")
@@ -788,7 +753,7 @@ This class allows to define a mocked alias bean to notificationService bean for 
 .. code-block:: java
 
    @ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = MocksConfiguration.class)
-   @ActiveProfiles("test")
+   @ActiveProfiles({"test", "resthub-jpa"})
    public class TaskServiceIntegrationTest extends AbstractTest {
       ...
    }
@@ -799,7 +764,7 @@ This class allows to define a mocked alias bean to notificationService bean for 
        .. code-block:: java
        
           @ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = MocksConfiguration.class)
-          @ActiveProfiles({"test", "resthub-jpa"})
+          @ActiveProfiles("test")
           public class TaskServiceIntegrationTest extends AbstractTest {
           
               @Inject
@@ -834,9 +799,9 @@ This class allows to define a mocked alias bean to notificationService bean for 
                   Assertions.assertThat(task.getUser()).isEqualTo(newUser);
           
                   verify(mockedNotificationService, times(3)).send(anyString(), anyString());
-                  verify(mockedNotificationService, times(1)).send("user.email@test.org", "The task " + task.getName() + " has been affected to you");
-                  verify(mockedNotificationService, times(1)).send("user.email@test.org", "The task " + task.getName() + " has been reaffected");
-                  verify(mockedNotificationService, times(1)).send("user2.email@test.org", "The task " + task.getName() + " has been affected to you");
+                  verify(mockedNotificationService, times(1)).send("user.email@test.org", "The task " + task.getTitle() + " has been affected to you");
+                  verify(mockedNotificationService, times(1)).send("user.email@test.org", "The task " + task.getTitle() + " has been reaffected");
+                  verify(mockedNotificationService, times(1)).send("user2.email@test.org", "The task " + task.getTitle() + " has been affected to you");
               }
           }
           
@@ -998,11 +963,8 @@ You can test in your browser (or, better, add a test in ``TaskControllerTest``) 
          @Test
          public void testAffectTaskToUser() {
              Task task = this.request("api/task").xmlPost(new Task("task1")).resource(Task.class);
-             User user = this.request("api/user").xmlPost(new User("user1")).resource(User.class);
+             User user = this.request("api/user")).xmlPost(new User("user1")).resource(User.class);
              String responseBody = this.request("api/task/" + task.getId() + "/user/" + user.getId()).put("").getBody();
-             resp = httpClient.url(userRootUrl()).xmlPost(new User("user1")).get();
-             User user = XmlHelper.deserialize(resp.getBody(), User.class);
-             String responseBody = httpClient.url(rootUrl() + "/" + task.getId() + "/user/" + user.getId()).put("").get().getBody();
              Assertions.assertThat(responseBody).isNotEmpty();
              Assertions.assertThat(responseBody).contains("task1");
              Assertions.assertThat(responseBody).contains("user1");
@@ -1011,8 +973,6 @@ You can test in your browser (or, better, add a test in ``TaskControllerTest``) 
 
 Step 5: Validate your beans and embed entities
 ----------------------------------------------
-
-**Solution** : you can find solution at `<http://resthub.org/training/spring/solution#step-5-validate-your-beans-and-embed-entities>`_
 
 Finally, we want to add validation constraints to our model. This could be done by using BeanValidation (JSR303 Spec) and its reference
 implementation: Hibernate Validator. see `documentation <http://docs.jboss.org/hibernate/validator/4.1/reference/en-US/html_single/>`_
@@ -1085,21 +1045,16 @@ Do:
     
         // TaskControllerTest
         public class TaskControllerTest extends AbstractWebTest {
-            protected String rootUrl() {
-                return "http://localhost:9797/api/task";
-            }
-
-            protected String userRootUrl() {
-                return "http://localhost:9797/api/user";
+            
+            public TaskControllerTest() {
+              super("resthub-web-server,resthub-jpa");
             }
 
             @Test
-            public void testCreateResource() throws IllegalArgumentException, InterruptedException, ExecutionException, IOException {
-                Client httpClient = new Client();
-                httpClient.url(rootUrl()).xmlPost(new Task("task1")).get();
-                httpClient.url(rootUrl()).xmlPost(new Task("task2")).get();
-                String responseBody = httpClient.url(rootUrl()).setQueryParameter("page", "no")
-                        .getJson().get().getBody();
+            public void testCreateResource() {
+                this.request("api/task").xmlPost(new Task("task1"));
+                this.request("api/task").xmlPost(new Task("task2"));
+                String responseBody = this.request("api/task").setQueryParameter("page", "no").getJson().getBody();
                 Assertions.assertThat(responseBody).isNotEmpty();
                 Assertions.assertThat(responseBody).doesNotContain("\"content\":2");
                 Assertions.assertThat(responseBody).contains("task1");
@@ -1107,17 +1062,14 @@ Do:
             }
 
             @Test
-            public void testAffectTaskToUser() throws IllegalArgumentException, InterruptedException, ExecutionException, IOException {
-                Client httpClient = new Client();
-                Response resp = httpClient.url(rootUrl()).xmlPost(new Task("task1")).get();
-                Task task = XmlHelper.deserialize(resp.getBody(), Task.class);
-                resp = httpClient.url(userRootUrl()).xmlPost(new User("user1", "user1@test.org")).get();
-                User user = XmlHelper.deserialize(resp.getBody(), User.class);
-                String responseBody = httpClient.url(rootUrl() + "/" + task.getId() + "/user/" + user.getId()).put("").get().getBody();
-             Assertions.assertThat(responseBody).isNotEmpty();
-             Assertions.assertThat(responseBody).contains("task1");
-             Assertions.assertThat(responseBody).contains("user1");
-         }
+            public void testAffectTaskToUser() {
+                Task task = this.request("api/task").xmlPost(new Task("task1")).resource(Task.class);
+                User user = this.request("api/user").xmlPost(new User("user1", "user1@test.org")).resource(User.class);
+                String responseBody = this.request("api/task/" + task.getId() + "/user/" + user.getId()).put("").getBody();
+                Assertions.assertThat(responseBody).isNotEmpty();
+                Assertions.assertThat(responseBody).contains("task1");
+                Assertions.assertThat(responseBody).contains("user1");
+            }
         }
     
         // TaskInitializer
