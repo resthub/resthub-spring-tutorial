@@ -32,7 +32,6 @@ Step 1: Initialization
    - Git installed : `<http://git-scm.com/downloads>`_
    - Maven installed : `<http://maven.apache.org/download.html>`_
    
-
 Find:
 +++++
 
@@ -146,8 +145,6 @@ This package contains the following sub packages and files:
 - ``src/main/resources`` contains all non java source files and, in particular, your spring application context, your database configuration file and you logging configuration.
 - ``src/test/`` contains, obviously, all you test related files and has the same structure as src/main (i.e. *java* and *resources*).
 
-``src/test/`` contains, obviously, all you test related files and has the same structure as src/main (i.e. *java* and *resources*).
-
 
 Step 2: Customize Model
 -----------------------
@@ -225,32 +222,17 @@ We now have a basic REST interface uppon our Task model object providing default
 
 Let's try to implement a ``findByName`` implementation that returns a Task based on it name: 
 
-
 Do:
 +++
 
 1. **Modify** ``TaskController.java`` **to add a new method called** ``findByName``  **with a name parameter mapped to** ``/api/task/name/{name}`` returning a single task element if exists.
+
   Implementation is done by adding a new repository findByName() method (see `<http://static.springsource.org/spring-data/data-jpa/docs/current/api/org/springframework/data/jpa/repository/JpaRepository.html#findAll()>`_) in interface.
   
   .. code-block:: Java
     
     Task findByName(String name);
   
-
-   [{
-       "id": 1,
-       "name": "testTask1",
-       "description": null
-   }, {
-       "id": 2,
-       "name": "testTask2",
-       "description": null
-   }, {
-       "id": 3,
-       "name": "testTask3",
-       "description": null
-   }]
-
 
   And in controller: 
   
@@ -259,22 +241,18 @@ Do:
     @RequestMapping(value = "name/{name}", method = RequestMethod.GET) @ResponseBody
     public Task searchByName(@PathVariable String name) {
       return this.repository.findByName(name);
-            return this.repository.findAll();
     }
 
   Check on your browser that `<http://localhost:8080/api/task/name/testTask1>`_ works and display a simple list of tasks, without pagination.
 
   .. code-block:: javascript
+
     {
       "id": 1,
       "name": "testTask1",
       "description": "bla bla"
     }
-    
 
-    **Note**: We cannot simply override ``/api/task?page=all`` method because mappings are currently defined in interface ``RestController`` 
-    (see `documentation <http://jenkins.pullrequest.org/job/resthub-spring-stack-master/javadoc/org/resthub/web/controller/RestController.html>`_)
-    and *Spring MVC* does not accept that a path appears twice.
     
 see `<https://github.com/resthub/resthub-spring-training/tree/step3-solution>`_ for complete solution.
 
@@ -317,11 +295,6 @@ Test your controller
                 Task task1 = this.request("api/task/name/task1").getJson().resource(Task.class);
                 Assertions.assertThat(task1).isNotNull();
                 Assertions.assertThat(task1.getName()).isEqualsTo("task1");
-                        .getJson().get().getBody();
-                Assertions.assertThat(responseBody).isNotEmpty();
-                Assertions.assertThat(responseBody).doesNotContain("\"content\":2");
-                Assertions.assertThat(responseBody).contains("task1");
-                Assertions.assertThat(responseBody).contains("task2");
             }
         }
        
@@ -353,14 +326,12 @@ Test your controller
         [INFO] Finished at: Thu Sep 13 14:27:44 CEST 2012
         [INFO] Final Memory: 13M/31M
         [INFO] ------------------------------------------------------------------------
-        
-        
+
 Step 4: Users own tasks
 -----------------------
 
 **Prerequisites** : you can find some prerequisites and reference implementation of ``NotificationService`` and ``MockConfiguration`` at
 `<http://github.com/resthub/resthub-spring-training/tree/step4-prerequisites>`_
-
 
 Find:
 +++++
@@ -388,6 +359,8 @@ Find:
     
 6. **Spring transactions documentation**
 
+    see `documentation <http://static.springsource.org/spring/docs/3.1.x/spring-framework-reference/html/transaction.html#transaction-declarative-annotations>`_
+
 Do:
 +++
 
@@ -397,6 +370,9 @@ Do:
    Each domain object should contain relation to the other. Relations should be **mapped with JPA** in order to be saved and retrieved from database.
    Be caution with potential infinite JSON serialization
    
+    .. code-block:: java
+        
+        // User
         @Entity
         public class User {
 
@@ -455,6 +431,8 @@ Do:
     and `Task <https://github.com/resthub/resthub-spring-training/blob/step4-solution/jpa-webservice/src/main/java/org/resthub/training/model/Task.java>`_
 
 2. **Provide dedicated Repository and Controller for user**
+
+    .. code-block:: java
     
         // Repository
         public interface UserRepository extends JpaRepository<User, Long> {
@@ -473,10 +451,6 @@ Do:
                 this.repository = repository;
             }
 
-            @Override
-            public Long getIdFromResource(User resource) {
-                return resource.getId();
-            }
         }
         
     see complete solution for `controller <https://github.com/resthub/resthub-spring-training/blob/step4-solution/jpa-webservice/src/main/java/org/resthub/training/controller/UserController.java>`_
@@ -520,7 +494,16 @@ But if you have more than simple CRUD needs, resthub provides also a generic **S
 5. **Create a new dedicated service (** ``TaskService``/``TaskServiceImpl`` **) for business user management** 
     - The new service should beneficiate of all CRUD Resthub services and work uppon TaskRepository.
     - Update your controller to manager this new 3 layers architecture
-     
+    
+        .. code-block:: java
+        
+            // Interface
+            public interface TaskService extends CrudService<Task, Long> {
+
+            }
+            
+            // Implementation
+            @Transactional
             @Named("taskService")
             public class TaskServiceImpl extends CrudServiceImpl<Task, Long, TaskRepository> implements TaskService {
 
@@ -543,15 +526,9 @@ But if you have more than simple CRUD needs, resthub provides also a generic **S
                     this.service = service;
                 }
 
-                @Override
-                public Long getIdFromResource(Task resource) {
-                    return resource.getId();
-                }
-
-                @RequestMapping(method = RequestMethod.GET, params = "page=no")
-                @ResponseBody
-                public List<Task> findAllNonPaginated() {
-                    return this.service.findAll();
+                @RequestMapping(value = "name/{name}", method = RequestMethod.GET) @ResponseBody
+                public List<Todo> searchByName(@PathVariable String name) {
+                  return this.repository.findByName(name);
                 }
 
             }
@@ -562,7 +539,7 @@ The idea is now to **add a method that affects a user to a task** based on user 
 has been affected and, if exists, the old affected user should be notified that his affectation was removed. 
 These business operations should be implemented in service layer: 
 
-7. **Declare and implement method** ``affectTaskToUser`` **in (**``TaskService`` / ``TaskServiceImpl``**)**
+7. **Declare and implement method** ``affectTaskToUser`` **in (**``TaskService`` / ``TaskServiceImpl`` **)**
    
    Notification simulation should be performed by implementing a custom ``NotificationService`` that simply
    logs the event (you can also get the implementation from our repo in step4 solution). It is important to have an independant service (for mocking - see below - purposes)
@@ -582,7 +559,8 @@ These business operations should be implemented in service layer:
    - Tip : You will need to manipulate userRepository in TaskService ...
    - Tip 2 : You don't even have to call ``repository.save()`` due to Transactional behaviour of your service
    - Tip 3 : Maybe you should consider to implement ``equals()`` and ``hashCode()`` methods for User & Task   
- 
+   
+    .. code-block:: java
 
         // TaskService
         public interface TaskService extends CrudService<Task, Long> {
@@ -660,20 +638,24 @@ Find:
 
 1. **Resthub2 testing tooling documentation**
 
+   see `<http://resthub.org/2/spring-stack.html#testing>`_
+
 Do:
 ###  
 
 1. **Create a new** ``TaskServiceIntegrationTest`` **integration test in** ``src/test/org/resthub/training/service/integration``
    This test should be **aware of spring context but non transactional** because testing a service should be done in a non transactional way. This is indeed the
-   way in which the service will be called (e.g. by controller). The repository test should extend ``org.resthub.test.common.AbstractTransactionalTest`` to be run
+   way in which the service will be called (e.g. by controller). The repository test should extend ``org.resthub.test.AbstractTransactionalTest`` to be run
    in a transactional context, as done by service.
 
     This test should perform an unique operation:
 
     - Create user and task and affect task to user.
-    - Refresh the task by calling service.findById and check the retrived task contains the affected user  
+    - Refresh the task by calling service.findById and check the retrived task contains the affected user
     
+    .. code-block:: java
     
+        @ActiveProfiles("resthub-jpa")
         public class TaskServiceIntegrationTest extends AbstractTest {
 
             @Inject
@@ -761,8 +743,8 @@ Do:
        public NotificationService mockedNotificationService() {
            return mock(NotificationService.class);
        }
-            }
-
+   }
+   
 This class allows to define a mocked alias bean to notificationService bean for test purposes. Its is scoped as **test profile** 
 (see `documentation <http://blog.springsource.com/2011/02/14/spring-3-1-m1-introducing-profile/>`_).
 
@@ -774,12 +756,12 @@ This class allows to define a mocked alias bean to notificationService bean for 
    @ActiveProfiles("test")
    public class TaskServiceIntegrationTest extends AbstractTest {
       ...
-                Assertions.assertThat(task1.getName()).isEqualsTo("task1");
-            }
    }
    
 3. **Modify your test to check that** ``NotificationService.send()`` **method is called once when a user is affected to a task and twice if there was
    already a user affected to this task. Check the values of parameters passed to send method.**
+
+       .. code-block:: java
        
           @ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = MocksConfiguration.class)
           @ActiveProfiles("test")
@@ -847,7 +829,8 @@ Do:
    - Define that when call in ``taskRepository.findOne()`` with parameter equal to 1L, the mock will return a valid task instance, null otherwise.
    - Provide these mocks to a new TaskServiceImpl instance (note that this test is a real unit test so we fon't use spring at all).
    - This should be done once for all tests in file.
- 
+   
+    .. code-block:: java
     
         public class TaskServiceTest {
 
@@ -887,7 +870,7 @@ Do:
    - Check that the expected exception is thrown when userId or taskId are null   
    - Check that the expected exception is thrown when userId or taskId does not match any object.
    - Check that the returned task contains the affected user.
-    
+ 
     .. code-block:: java   
     
         ...
@@ -978,15 +961,11 @@ You can test in your browser (or, better, add a test in ``TaskControllerTest``) 
     .. code-block:: java
     
          @Test
-         public void testAffectTaskToUser() throws IllegalArgumentException, InterruptedException, ExecutionException, IOException {
-             Client httpClient = new Client();
-             Response resp = httpClient.url(rootUrl()).xmlPost(new Task("task1")).get();
-             Task task = XmlHelper.deserialize(resp.getBody(), Task.class);
-             resp = httpClient.url(userRootUrl()).xmlPost(new User("user1")).get();
-             User user = XmlHelper.deserialize(resp.getBody(), User.class);
-             String responseBody = httpClient.url(rootUrl() + "/" + task.getId() + "/user/" + user.getId()).put("").get().getBody();
+         public void testAffectTaskToUser() {
+             Task task = this.request("api/task").xmlPost(new Task("task1")).resource(Task.class);
+             User user = this.request("api/user")).xmlPost(new User("user1")).resource(User.class);
+             String responseBody = this.request("api/task/" + task.getId() + "/user/" + user.getId()).put("").getBody();
              Assertions.assertThat(responseBody).isNotEmpty();
              Assertions.assertThat(responseBody).contains("task1");
              Assertions.assertThat(responseBody).contains("user1");
          }
-
