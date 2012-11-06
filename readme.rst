@@ -133,7 +133,7 @@ This package contains the following sub packages and files:
 - **controller**: This package contains all your application controllers, i.e. your web API. In the generated sample, the archetype provided
   you a SampleController that simply extend ``RepositoryBasedRestController`` and apply its behaviour to the *Sample* model and
   *SampleRepository*: ``SampleController extends RepositoryBasedRestController<Sample, Long, SampleRepository>``. This generic ``RepositoryBasedRestController``
-  provides basic CRUD functionalities: see Resthub2 documentation for details.
+  provides basic CRUD functionalities: see `documentation <http://jenkins.pullrequest.org/job/resthub-spring-stack-master/javadoc/org/resthub/web/controller/ServiceBasedRestController.html>`_
 - **model**: This package contains all you domain models.
 - **repository**: This package contains your repositories, i.e. classes that provide methods to manipulate, persist and retrieve your objects from your JPA
   manager (and so your database). In the generated sample, the archetype provided you a SampleRepository that simply extend Spring-Data ``JpaRepository``.
@@ -144,6 +144,8 @@ This package contains the following sub packages and files:
   initializations such as data creation.
 - ``src/main/resources`` contains all non java source files and, in particular, your spring application context, your database configuration file and you logging configuration.
 - ``src/test/`` contains, obviously, all you test related files and has the same structure as src/main (i.e. *java* and *resources*).
+
+``src/test/`` contains, obviously, all you test related files and has the same structure as src/main (i.e. *java* and *resources*).
 
 
 Step 2: Customize Model
@@ -326,7 +328,6 @@ Test your controller
         [INFO] Finished at: Thu Sep 13 14:27:44 CEST 2012
         [INFO] Final Memory: 13M/31M
         [INFO] ------------------------------------------------------------------------
-
 Step 4: Users own tasks
 -----------------------
 
@@ -444,8 +445,8 @@ Do:
        public NotificationService mockedNotificationService() {
            return mock(NotificationService.class);
        }
-   }
-   
+            }
+
 This class allows to define a mocked alias bean to notificationService bean for test purposes. Its is scoped as **test profile** 
 (see `documentation <http://blog.springsource.com/2011/02/14/spring-3-1-m1-introducing-profile/>`_).
 
@@ -457,6 +458,8 @@ This class allows to define a mocked alias bean to notificationService bean for 
    @ActiveProfiles("test")
    public class TaskServiceIntegrationTest extends AbstractTest {
       ...
+                Assertions.assertThat(task1.getName()).isEqualsTo("task1");
+            }
    }
    
 3. **Modify your test to check that** ``NotificationService.send()`` **method is called once when a user is affected to a task and twice if there was
