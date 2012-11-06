@@ -1,31 +1,24 @@
 package org.resthub.training.controller;
 
 import org.fest.assertions.api.Assertions;
-import org.resthub.test.common.AbstractWebTest;
+import org.resthub.test.AbstractWebTest;
 import org.resthub.training.model.Task;
-import org.resthub.web.Client;
 import org.testng.annotations.Test;
-
-import java.io.IOException;
-import java.util.concurrent.ExecutionException;
 
 public class TaskControllerTest extends AbstractWebTest {
 
-    protected String rootUrl() {
-        return "http://localhost:8080/api/task";
+    public TaskControllerTest() {
+        // Activate resthub-web-server and resthub-jpa Spring profiles
+        super("resthub-web-server,resthub-jpa");
     }
 
 
     @Test
-    public void testCreateResource() throws IllegalArgumentException, InterruptedException, ExecutionException, IOException {
-        Client httpClient = new Client();
-        httpClient.url(rootUrl()).xmlPost(new Task("task1")).get();
-        httpClient.url(rootUrl()).xmlPost(new Task("task2")).get();
-        String responseBody = httpClient.url(rootUrl()).setQueryParameter("page", "no")
-                .getJson().get().getBody();
-        Assertions.assertThat(responseBody).isNotEmpty();
-        Assertions.assertThat(responseBody).doesNotContain("\"content\":2");
-        Assertions.assertThat(responseBody).contains("task1");
-        Assertions.assertThat(responseBody).contains("task2");
+    public void testFindByName() {
+        this.request("api/task").xmlPost(new Task("task1"));
+        this.request("api/task").xmlPost(new Task("task2"));
+        Task task1 = this.request("api/task/name/task1").getJson().resource(Task.class);
+        Assertions.assertThat(task1).isNotNull();
+        Assertions.assertThat(task1.getName()).isEqualTo("task1");
     }
 }
