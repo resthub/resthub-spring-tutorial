@@ -1,0 +1,3 @@
+// Cool Class Diagram
+[User|+name;+email;]-owns>[Task|+title;+description;]
+[User]++-1[Address|+street;+city]
