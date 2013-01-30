@@ -12,7 +12,6 @@ import org.springframework.util.Assert;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-import java.util.ArrayList;
 
 @Transactional
 @Named("taskService")
@@ -40,8 +39,8 @@ public class TaskServiceImpl extends CrudServiceImpl<Task, Long, TaskRepository>
         this.notificationService = notificationService;
     }
 
-    public Task findByName(String name) {
-        return this.repository.findByName(name);
+    public Task findByTitle(String title) {
+        return this.repository.findByTitle(title);
     }
 
     @Transactional(readOnly = false)
@@ -59,12 +58,12 @@ public class TaskServiceImpl extends CrudServiceImpl<Task, Long, TaskRepository>
 
         if (task.getUser() != null && task.getUser() != user) {
             if (task.getUser().getEmail() != null) {
-                this.notificationService.send(task.getUser().getEmail(), "The task " + task.getName() + " has been reaffected");
+                this.notificationService.send(task.getUser().getEmail(), "The task " + task.getTitle() + " has been reaffected");
             }
         }
 
         if (user.getEmail() != null) {
-            this.notificationService.send(user.getEmail(), "The task " + task.getName() + " has been affected to you");
+            this.notificationService.send(user.getEmail(), "The task " + task.getTitle() + " has been affected to you");
         }
 
         task.setUser(user);

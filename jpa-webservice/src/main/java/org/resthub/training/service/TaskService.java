@@ -7,6 +7,6 @@ import org.resthub.training.model.User;
 public interface TaskService extends CrudService<Task, Long> {
 
     Task affectTaskToUser(Long taskId, Long userId);
-    Task findByName(String name);
+    Task findByTitle(String title);
 
 }
