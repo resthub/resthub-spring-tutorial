@@ -14,11 +14,11 @@ public class TaskControllerTest extends AbstractWebTest {
 
 
     @Test
-    public void testFindByName() {
+    public void testFindByTitle() {
         this.request("api/task").xmlPost(new Task("task1"));
         this.request("api/task").xmlPost(new Task("task2"));
-        Task task1 = this.request("api/task/name/task1").getJson().resource(Task.class);
+        Task task1 = this.request("api/task/title/task1").jsonGet().resource(Task.class);
         Assertions.assertThat(task1).isNotNull();
-        Assertions.assertThat(task1.getName()).isEqualTo("task1");
+        Assertions.assertThat(task1.getTitle()).isEqualTo("task1");
     }
 }
