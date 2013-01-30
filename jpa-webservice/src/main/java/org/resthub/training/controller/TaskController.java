@@ -27,10 +27,10 @@ public class TaskController extends ServiceBasedRestController<Task, Long, TaskS
         return resource.getId();
     }
 
-    @RequestMapping(value = "name/{name}", method = RequestMethod.GET)
+    @RequestMapping(value = "title/{title}", method = RequestMethod.GET)
     @ResponseBody
-    public Task findByName(@PathVariable String name) {
-        return this.service.findByName(name);
+    public Task findByTitle(@PathVariable String title) {
+        return this.service.findByTitle(title);
     }
 
     @RequestMapping(value = "{taskId}/user/{userId}", method = RequestMethod.PUT)

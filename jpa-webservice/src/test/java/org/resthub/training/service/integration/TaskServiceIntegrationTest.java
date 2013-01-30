@@ -56,8 +56,8 @@ public class TaskServiceIntegrationTest extends AbstractTest {
         Assertions.assertThat(task.getUser()).isEqualTo(newUser);
 
         verify(mockedNotificationService, times(3)).send(anyString(), anyString());
-        verify(mockedNotificationService, times(1)).send("user.email@test.org", "The task " + task.getName() + " has been affected to you");
-        verify(mockedNotificationService, times(1)).send("user.email@test.org", "The task " + task.getName() + " has been reaffected");
-        verify(mockedNotificationService, times(1)).send("user2.email@test.org", "The task " + task.getName() + " has been affected to you");
+        verify(mockedNotificationService, times(1)).send("user.email@test.org", "The task " + task.getTitle() + " has been affected to you");
+        verify(mockedNotificationService, times(1)).send("user.email@test.org", "The task " + task.getTitle() + " has been reaffected");
+        verify(mockedNotificationService, times(1)).send("user2.email@test.org", "The task " + task.getTitle() + " has been affected to you");
     }
 }
