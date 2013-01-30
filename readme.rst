@@ -182,7 +182,7 @@ Answer:
 
 1. **How is wrapped the list of all existing tasks ?**
     
-    A ``GET`` request on `<http://localhost:8080/api/task?page=all>`_ shows that the list of all existing tasks is **wrapped into a Pagination object** `PageImpl`.
+    A ``GET`` request on `<http://localhost:8080/api/task>`_ shows that the list of all existing tasks is **wrapped into a Pagination object** `PageImpl`.
     
 2. **How to get a single task ?**
     
