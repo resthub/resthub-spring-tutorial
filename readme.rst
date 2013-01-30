@@ -5,14 +5,14 @@ This tutorial will help you to get an overview of resthub-spring-stack and its c
 
 If you want to use this tutorial in a training mode, `a version without answers is also available <spring-without-answer.html>`_.
 
-**Code** : you can find the code of the sample application at `<https://github.com/resthub/resthub-spring-training>`_ (Have a look to rest branch for step 8 code).
+**Code**: you can find the code of the sample application at `<https://github.com/resthub/resthub-spring-tutorial>`_ (Have a look to branches for each step).
 
 Problem description
 -------------------
 
 During this tutorial we'll illustrate resthub usage with a sample and simple REST interface to manage tasks. Its components are:
 
-.. image:: http://www.yuml.me/c57b8a61
+.. image:: ../_static/tutorial-class-diagram.png
 
 Our REST interface will be mainly able to expose services to:
 
@@ -27,10 +27,10 @@ Each step of this tutorial is proposed as a git branch. You could checkout a ste
 Step 1: Initialization
 ----------------------
 
-**Prerequisites** :
+**Prerequisites**:
 
-   - Git installed : `<http://git-scm.com/downloads>`_
-   - Maven installed : `<http://maven.apache.org/download.html>`_
+   - Git installed: `<http://git-scm.com/downloads>`_
+   - Maven installed: `<http://maven.apache.org/download.html>`_
    
 Find:
 +++++
@@ -54,8 +54,8 @@ Find:
     - Spring Data: `reference <http://www.springsource.org/spring-data>`_
         - Spring Data JPA: `reference <http://static.springsource.org/spring-data/data-jpa/docs/current/reference/html/>`_ and `Javadoc <http://static.springsource.org/spring-data/data-jpa/docs/current/api/>`_
         - Spring Data MongoDB: `reference <http://static.springsource.org/spring-data/data-mongodb/docs/current/reference/html/>`_ and `Javadoc <http://static.springsource.org/spring-data/data-mongodb/docs/current/api/>`_
-    - Hibernate ORM and JPA : `reference <http://docs.jboss.org/hibernate/orm/4.1/manual/en-US/html_single/>`_ and `Javadoc <http://docs.jboss.org/hibernate/orm/4.1/javadocs/>`_
-    - Spring MVC 3.1: `reference <http://static.springsource.org/spring-data/data-mongodb/docs/current/reference/html/>`_
+    - Hibernate ORM and JPA: `reference <http://docs.jboss.org/hibernate/orm/4.1/manual/en-US/html_single/>`_ and `Javadoc <http://docs.jboss.org/hibernate/orm/4.1/javadocs/>`_
+    - Spring MVC: `reference <http://static.springsource.org/spring-data/data-mongodb/docs/current/reference/html/>`_
     - Spring MVC Router: `reference <https://github.com/resthub/springmvc-router>`_
     - Jackson 2.1: `reference <http://wiki.fasterxml.com/JacksonDocumentation>`_ and `Javadoc <http://wiki.fasterxml.com/JacksonJavaDocs>`_
     - AsyncHttpClient: `reference <https://github.com/sonatype/async-http-client>`_ and `Javadoc <http://sonatype.github.com/async-http-client/apidocs/reference/packages.html>`_
@@ -67,7 +67,7 @@ Do:
 
 1. **Generate a Resthub2 template project structure**
 
-   You can choose which template to use : pure Java Spring server template or Server + Client template if you plan to provide a RIA client
+   You can choose which template to use: pure Java Spring server template or Server + Client template if you plan to provide a RIA client
    for your app based on `Resthub Spring Stack`
    
    Choose groupId `org.resthub.training`, artifactId `jpa-webservice`, package `org.resthub.training` and version `1.0-SNAPSHOT`.
@@ -75,7 +75,7 @@ Do:
        As described in `Resthub documentation <http://resthub.org/2/getting-started.html>`_, create your local project by executing 
        ``mvn archetype:generate -DarchetypeCatalog=http://nexus.pullrequest.org/content/repositories/releases/`` in your `training` directory.
 
-       - When **archetype** prompt, choose `1`: `org.resthub:resthub-jpa-webservice-archetype`. or 2 if you want also that a basic resthub-backbone-stack project
+       - When **archetype** prompt, choose `org.resthub:resthub-jpa-webservice-archetype`. or `org.resthub:resthub-jpa-backbonejs-archetype` if you want also that a basic resthub-backbone-stack project
          will be generated. Enter
        - When **groupId** prompt, choose your `groupId`: `org.resthub.training`. Enter
        - When **artifactId** prompt, choose your `artifactId`: `jpa-webservice`. Enter
@@ -180,17 +180,17 @@ Do:
 Answer:
 +++++++
 
-1. **How is wrapped the list of all existing tasks ?**
+1. **How is wrapped the list of all existing tasks?**
     
-    A ``GET`` request on `<http://localhost:8080/api/task?page=all>`_ shows that the list of all existing tasks is **wrapped into a Pagination object** `PageImpl`.
+    A ``GET`` request on `<http://localhost:8080/api/task>`_ shows that the list of all existing tasks is **wrapped into a Pagination object** `PageImpl`.
     
-2. **How to get a single task ?**
+2. **How to get a single task?**
     
     A ``GET`` request on `<http://localhost:8080/api/task/1>`_ **returns a single Task** object with id 1, 
     
-3. **How to update an existing task ? Update task 1 to add a description** ``new description``
+3. **How to update an existing task? Update task 1 to add a description** ``new description``
     
-    A ``PUT`` request on `<http://localhost:8080/api/task/1>`_ with ContentType ``application/json`` and body : 
+    A ``PUT`` request on `<http://localhost:8080/api/task/1>`_ with ContentType ``application/json`` and body: 
 
     .. code-block:: javascript
 
@@ -200,11 +200,11 @@ Answer:
           "description": "new description"
        }
 
-4. **How to delete a task ?**       
+4. **How to delete a task?**       
   
     A ``DELETE`` request on `<http://localhost:8080/api/task/1>`_ **delete the Task** (check with a GET on `<http://localhost:8080/api/task>`_).
     
-5. **How to create a task ?**  
+5. **How to create a task?**  
     
     A ``POST`` request on `<http://localhost:8080/api/task>`_ with ContentType ``application/json`` and body: 
 
@@ -225,25 +225,30 @@ Let's try to implement a ``findByName`` implementation that returns a Task based
 Do:
 +++
 
-1. **Modify** ``TaskController.java`` **to add a new method called** ``findByName``  **with a name parameter mapped to** ``/api/task/name/{name}`` returning a single task element if exists.
+1. **Modify** ``TaskController.java`` **to add a new method called** ``findByTitle``  **with a name parameter mapped to** ``/api/task/title/{title}`` returning a single task element if exists.
 
-  Implementation is done by adding a new repository findByName() method (see `<http://static.springsource.org/spring-data/data-jpa/docs/current/api/org/springframework/data/jpa/repository/JpaRepository.html#findAll()>`_) in interface.
-  
+  **Tip:** Consider using ``@ResponseBody`` annotation (see `<http://static.springsource.org/spring/docs/current/spring-framework-reference/html/mvc.html#mvc-ann-responsebody>`_)
+
+  Implement this by adding a new repository method (see `Spring Data JPA documentation <http://static.springsource.org/spring-data/data-jpa/docs/current/api/>`_).
+  Check on your browser that `<http://localhost:8080/api/task/title/{title}>`_ with an existing title works.
+   
+  e.g.
+   
   .. code-block:: Java
     
-    Task findByName(String name);
+    Task findByTitle(String title);
   
 
   And in controller: 
   
   .. code-block:: Java
     
-    @RequestMapping(value = "name/{name}", method = RequestMethod.GET) @ResponseBody
-    public Task searchByName(@PathVariable String name) {
-      return this.repository.findByName(name);
+    @RequestMapping(value = "title/{title}", method = RequestMethod.GET) @ResponseBody
+    public Task searchByTitle(@PathVariable String title) {
+      return this.repository.findByTitle(title);
     }
 
-  Check on your browser that `<http://localhost:8080/api/task/name/testTask1>`_ works and display a simple list of tasks, without pagination.
+  Check on your browser that `<http://localhost:8080/api/task/title/testTask1>`_ works and display a simple list of tasks, without pagination.
 
   .. code-block:: javascript
 
@@ -259,6 +264,22 @@ see `<https://github.com/resthub/resthub-spring-training/tree/step3-solution>`_ 
 Test your controller
 ++++++++++++++++++++
 
+We are going to test our new controller ``findByTitle`` method.
+
+Find:
+#####
+
+1. **Resthub2 testing tooling documentation**
+
+Do:
+### 
+
+1. **Add dependency to use Resthub2 testing tools** 
+2. In ``src/test/org/resthub/training``, add a ``controller`` directory and create a ``TaskControllerTest`` inside. 
+   We first want to make an **integration test** of our controller, i.e. a test that needs to run an embedded servlet container.
+   **Implement a new** ``testFindByTitle`` **test method that creates some tasks, call our new REST interface in order to find taks by name and check that the JSON response in order to be sure that it works as expected** 
+3. **Run test and check it passes**
+
 1. **Add dependency to use Resthub2 testing tools**
 
     .. code-block:: xml
@@ -271,8 +292,8 @@ Test your controller
        </dependency>
    
 2. In ``src/test/org/resthub/training``, add a ``controller`` directory and create a ``TaskControllerTest`` inside. 
-   We first want to make an **integration test** of our controller. i.e. a test that need to run and embedded servlet container.
-   **Implement a new** ``testFindByName`` **test method that creates some tasks and call controller.** 
+   We first want to make an **integration test** of our controller, i.e. a test that needs to run an embedded servlet container.
+   **Implement a new** ``testFindByTitle`` **test method that creates some tasks and call controller.** 
    
    Verify that the new controller returns a response that is not null, with the right name.
 
@@ -282,23 +303,23 @@ Test your controller
     .. code-block:: Java
     
         public class TaskControllerTest extends AbstractWebTest {
-            protected String rootUrl() {
+            public TaskControllerTest() {
                 // Activate resthub-web-server and resthub-jpa Spring profiles
                 super("resthub-web-server,resthub-jpa");
             }
 
 
             @Test
-            public void testFindByName() {
+            public void testFindByTitle() {
                 this.request("api/task").xmlPost(new Task("task1"));
                 this.request("api/task").xmlPost(new Task("task2"));
-                Task task1 = this.request("api/task/name/task1").getJson().resource(Task.class);
+                Task task1 = this.request("api/task/title/task1").jsonGet().resource(Task.class);
                 Assertions.assertThat(task1).isNotNull();
-                Assertions.assertThat(task1.getName()).isEqualsTo("task1");
+                Assertions.assertThat(task1.getTitle()).isEqualTo("task1");
             }
         }
        
-    see `<https://github.com/resthub/resthub-spring-training/tree/step3-solution>`_ for complete solution.
+    see `<https://github.com/resthub/resthub-spring-tutorial/tree/step3-solution>`_ for complete solution.
 
 3. **Run test and check it passes**
 
@@ -315,7 +336,7 @@ Test your controller
         
         Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 15.046 sec
 
-        Results :
+        Results:
 
         Tests run: 1, Failures: 0, Errors: 0, Skipped: 0
 
@@ -499,6 +520,8 @@ But if you have more than simple CRUD needs, resthub provides also a generic **S
         
             // Interface
             public interface TaskService extends CrudService<Task, Long> {
+            
+                Task findByTitle(String title);
 
             }
             
@@ -511,6 +534,11 @@ But if you have more than simple CRUD needs, resthub provides also a generic **S
                 @Inject
                 public void setRepository(TaskRepository taskRepository) {
                     super.setRepository(taskRepository);
+                }
+                
+                @Override
+                public Task findByTitle(String title) {
+                    return this.repository.findByTitle(title);
                 }
             }
             
@@ -526,9 +554,10 @@ But if you have more than simple CRUD needs, resthub provides also a generic **S
                     this.service = service;
                 }
 
-                @RequestMapping(value = "name/{name}", method = RequestMethod.GET) @ResponseBody
-                public List<Todo> searchByName(@PathVariable String name) {
-                  return this.repository.findByName(name);
+                @RequestMapping(value = "title/{title}", method = RequestMethod.GET)
+                @ResponseBody
+                public Task searchByTitle(@PathVariable String title) {
+                    return this.service.findByTitle(title);
                 }
 
             }
@@ -542,7 +571,9 @@ These business operations should be implemented in service layer:
 7. **Declare and implement method** ``affectTaskToUser`` **in (**``TaskService`` / ``TaskServiceImpl`` **)**
    
    Notification simulation should be performed by implementing a custom ``NotificationService`` that simply
-   logs the event (you can also get the implementation from our repo in step4 solution). It is important to have an independant service (for mocking - see below - purposes)
+   logs the event (you can also get the implementation from our repo in step4-prerequisites : 
+   https://github.com/resthub/resthub-spring-tutorial/tree/step4-prerequisites). 
+   It is important to have an independant service (for mocking - see below - purposes)
    and you should not simply log in your new method. 
   
    **Signatures:**
@@ -752,11 +783,11 @@ This class allows to define a mocked alias bean to notificationService bean for 
 
 .. code-block:: java
 
-   @ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = MocksConfiguration.class)
-   @ActiveProfiles("test")
-   public class TaskServiceIntegrationTest extends AbstractTest {
+    @ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = MocksConfiguration.class)
+    @ActiveProfiles({"test", "resthub-jpa"})
+    public class TaskServiceIntegrationTest extends AbstractTest {
       ...
-   }
+    }
    
 3. **Modify your test to check that** ``NotificationService.send()`` **method is called once when a user is affected to a task and twice if there was
    already a user affected to this task. Check the values of parameters passed to send method.**
@@ -799,9 +830,9 @@ This class allows to define a mocked alias bean to notificationService bean for 
                   Assertions.assertThat(task.getUser()).isEqualTo(newUser);
           
                   verify(mockedNotificationService, times(3)).send(anyString(), anyString());
-                  verify(mockedNotificationService, times(1)).send("user.email@test.org", "The task " + task.getName() + " has been affected to you");
-                  verify(mockedNotificationService, times(1)).send("user.email@test.org", "The task " + task.getName() + " has been reaffected");
-                  verify(mockedNotificationService, times(1)).send("user2.email@test.org", "The task " + task.getName() + " has been affected to you");
+                  verify(mockedNotificationService, times(1)).send("user.email@test.org", "The task " + task.getTitle() + " has been affected to you");
+                  verify(mockedNotificationService, times(1)).send("user.email@test.org", "The task " + task.getTitle() + " has been reaffected");
+                  verify(mockedNotificationService, times(1)).send("user2.email@test.org", "The task " + task.getTitle() + " has been affected to you");
               }
           }
           
@@ -940,10 +971,10 @@ Do:
                 return resource.getId();
             }
 
-            @RequestMapping(method = RequestMethod.GET, params = "page=no")
+            @RequestMapping(value = "title/{title}", method = RequestMethod.GET)
             @ResponseBody
-            public List<Task> findAllNonPaginated() {
-                return this.service.findAll();
+            public Task searchByTitle(@PathVariable String title) {
+                return this.service.findByTitle(title);
             }
 
             @RequestMapping(value = "{taskId}/user/{userId}", method = RequestMethod.PUT)
@@ -960,12 +991,12 @@ You can test in your browser (or, better, add a test in ``TaskControllerTest``) 
 
     .. code-block:: java
     
-         @Test
-         public void testAffectTaskToUser() {
-             Task task = this.request("api/task").xmlPost(new Task("task1")).resource(Task.class);
-             User user = this.request("api/user").xmlPost(new User("user1")).resource(User.class);
-             String responseBody = this.request("api/task/" + task.getId() + "/user/" + user.getId()).put("").getBody();
-             Assertions.assertThat(responseBody).isNotEmpty();
-             Assertions.assertThat(responseBody).contains("task1");
-             Assertions.assertThat(responseBody).contains("user1");
-         }
+        @Test
+        public void testAffectTaskToUser() {
+            Task task = this.request("api/task").xmlPost(new Task("new Task")).resource(Task.class);
+            User user = this.request("api/user").xmlPost(new User("new User")).resource(User.class);
+            String responseBody = this.request("api/task/" + task.getId() + "/user/" + user.getId()).put("").getBody();
+            Assertions.assertThat(responseBody).isNotEmpty();
+            Assertions.assertThat(responseBody).contains("new Task");
+            Assertions.assertThat(responseBody).contains("new User");
+        }

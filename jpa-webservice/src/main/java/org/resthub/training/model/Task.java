@@ -9,7 +9,7 @@ import javax.persistence.ManyToOne;
 public class Task {
 
     private Long id;
-    private String name;
+    private String title;
     private String description;
     private User user;
 
@@ -17,13 +17,13 @@ public class Task {
         super();
     }
 
-    public Task(String name) {
+    public Task(String title) {
         super();
-        this.name = name;
+        this.title = title;
     }
 
-    public Task(String name, User user) {
-        this(name);
+    public Task(String title, User user) {
+        this(title);
         this.user = user;
     }
 
@@ -37,12 +37,12 @@ public class Task {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getTitle() {
+        return title;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getDescription() {
