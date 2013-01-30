@@ -75,7 +75,7 @@ Do:
        As described in `Resthub documentation <http://resthub.org/2/getting-started.html>`_, create your local project by executing 
        ``mvn archetype:generate -DarchetypeCatalog=http://nexus.pullrequest.org/content/repositories/releases/`` in your `training` directory.
 
-       - When **archetype** prompt, choose `1`: `org.resthub:resthub-jpa-webservice-archetype`. or 2 if you want also that a basic resthub-backbone-stack project
+       - When **archetype** prompt, choose `org.resthub:resthub-jpa-webservice-archetype`. or `org.resthub:resthub-jpa-backbonejs-archetype` if you want also that a basic resthub-backbone-stack project
          will be generated. Enter
        - When **groupId** prompt, choose your `groupId`: `org.resthub.training`. Enter
        - When **artifactId** prompt, choose your `artifactId`: `jpa-webservice`. Enter
@@ -182,7 +182,7 @@ Answer:
 
 1. **How is wrapped the list of all existing tasks ?**
     
-    A ``GET`` request on `<http://localhost:8080/api/task?page=all>`_ shows that the list of all existing tasks is **wrapped into a Pagination object** `PageImpl`.
+    A ``GET`` request on `<http://localhost:8080/api/task>`_ shows that the list of all existing tasks is **wrapped into a Pagination object** `PageImpl`.
     
 2. **How to get a single task ?**
     
