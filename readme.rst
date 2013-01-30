@@ -225,25 +225,25 @@ Let's try to implement a ``findByName`` implementation that returns a Task based
 Do:
 +++
 
-1. **Modify** ``TaskController.java`` **to add a new method called** ``findByName``  **with a name parameter mapped to** ``/api/task/name/{name}`` returning a single task element if exists.
+1. **Modify** ``TaskController.java`` **to add a new method called** ``findByTitle``  **with a name parameter mapped to** ``/api/task/name/{name}`` returning a single task element if exists.
 
   Implementation is done by adding a new repository findByName() method (see `<http://static.springsource.org/spring-data/data-jpa/docs/current/api/org/springframework/data/jpa/repository/JpaRepository.html#findAll()>`_) in interface.
   
   .. code-block:: Java
     
-    Task findByName(String name);
+    Task findByTitle(String title);
   
 
   And in controller: 
   
   .. code-block:: Java
     
-    @RequestMapping(value = "name/{name}", method = RequestMethod.GET) @ResponseBody
-    public Task searchByName(@PathVariable String name) {
-      return this.repository.findByName(name);
+    @RequestMapping(value = "title/{title}", method = RequestMethod.GET) @ResponseBody
+    public Task searchByTitle(@PathVariable String title) {
+      return this.repository.findByTitle(title);
     }
 
-  Check on your browser that `<http://localhost:8080/api/task/name/testTask1>`_ works and display a simple list of tasks, without pagination.
+  Check on your browser that `<http://localhost:8080/api/task/title/testSample1>`_ works and display a simple list of tasks, without pagination.
 
   .. code-block:: javascript
 
@@ -282,19 +282,19 @@ Test your controller
     .. code-block:: Java
     
         public class TaskControllerTest extends AbstractWebTest {
-            protected String rootUrl() {
+            public TaskControllerTest() {
                 // Activate resthub-web-server and resthub-jpa Spring profiles
                 super("resthub-web-server,resthub-jpa");
             }
 
 
             @Test
-            public void testFindByName() {
+            public void testFindByTitle() {
                 this.request("api/task").xmlPost(new Task("task1"));
                 this.request("api/task").xmlPost(new Task("task2"));
-                Task task1 = this.request("api/task/name/task1").getJson().resource(Task.class);
+                Task task1 = this.request("api/task/title/task1").jsonGet().resource(Task.class);
                 Assertions.assertThat(task1).isNotNull();
-                Assertions.assertThat(task1.getName()).isEqualsTo("task1");
+                Assertions.assertThat(task1.getTitle()).isEqualTo("task1");
             }
         }
        
