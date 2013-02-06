@@ -275,7 +275,7 @@ Do:
 ### 
 
 1. **Add dependency to use Resthub2 testing tools** 
-2. In ``src/test/org/resthub/training``, add a ``controller`` directory and create a ``TaskControllerTest`` inside. 
+2. In ``src/test/java/org/resthub/training``, add a ``controller`` directory and create a ``TaskControllerTest`` inside. 
    We first want to make an **integration test** of our controller, i.e. a test that needs to run an embedded servlet container.
    **Implement a new** ``testFindByTitle`` **test method that creates some tasks, call our new REST interface in order to find taks by name and check that the JSON response in order to be sure that it works as expected** 
 3. **Run test and check it passes**
@@ -762,7 +762,7 @@ Find:
 Do:
 ###  
 
-1. **Add in** ``src/test/java/org/resthub/training`` **a new** ``MockConfiguration`` **class** 
+1. **Add in** ``src/test/java/org/resthub/training`` **a new** ``MocksConfiguration`` **class** 
 
 .. code-block:: java
 
