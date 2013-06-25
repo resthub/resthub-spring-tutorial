@@ -21,8 +21,4 @@ public class SampleController extends RepositoryBasedRestController<Sample, Long
         this.repository = repository;
     }
 
-    @Override
-    public Long getIdFromResource(Sample resource) {
-        return resource.getId();
-    }
 }

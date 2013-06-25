@@ -8,15 +8,15 @@ import javax.persistence.Id;
 public class Sample {
 
     private Long id;
-    private String name;
+    private String title;
 
     public Sample() {
         super();
     }
 
-    public Sample(String name) {
+    public Sample(String title) {
         super();
-        this.name = name;
+        this.title = title;
     }
 
     @Id
@@ -29,11 +29,11 @@ public class Sample {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getTitle() {
+        return title;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setTitle(String title) {
+        this.title = title;
     }
 }
