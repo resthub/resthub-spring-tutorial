@@ -13,14 +13,13 @@ public class TaskControllerTest extends AbstractWebTest {
         super("resthub-web-server,resthub-jpa");
     }
 
-
     @Test
-    public void testFindByName() {
+    public void testFindByTitle() {
         this.request("api/task").xmlPost(new Task("newTask1"));
         this.request("api/task").xmlPost(new Task("task2"));
-        Task task1 = this.request("api/task/name/newTask1").getJson().resource(Task.class);
+        Task task1 = this.request("api/task/title/newTask1").jsonGet().resource(Task.class);
         Assertions.assertThat(task1).isNotNull();
-        Assertions.assertThat(task1.getName()).isEqualTo("newTask1");
+        Assertions.assertThat(task1.getTitle()).isEqualTo("newTask1");
     }
 
     @Test
@@ -32,4 +31,5 @@ public class TaskControllerTest extends AbstractWebTest {
         Assertions.assertThat(responseBody).contains("task1");
         Assertions.assertThat(responseBody).contains("user1");
     }
+
 }
