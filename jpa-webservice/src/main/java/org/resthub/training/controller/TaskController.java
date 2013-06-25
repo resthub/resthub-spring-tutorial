@@ -23,10 +23,6 @@ public class TaskController extends RepositoryBasedRestController<Task, Long, Ta
         this.repository = repository;
     }
 
-    public Long getIdFromResource(Task resource) {
-        return resource.getId();
-    }
-
     @RequestMapping(value = "title/{title}", method = RequestMethod.GET)
     @ResponseBody
     public Task findByTitle(@PathVariable String title) {
