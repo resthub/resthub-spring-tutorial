@@ -1,1 +1,1 @@
-RESThub Spring stack Tutorial is available at http://resthub.org/tutorial/spring.html
+RESThub Spring stack Tutorial is available at http://resthub.org/docs/spring/tutorial/
