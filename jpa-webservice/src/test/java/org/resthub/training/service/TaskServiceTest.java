@@ -42,10 +42,6 @@ public class TaskServiceTest {
         this.taskService.setNotificationService(this.notificationService);
     }
 
-    @Inject
-    @Named("notificationService")
-    private NotificationService mockedNotificationService;
-
     @Test(expectedExceptions = {IllegalArgumentException.class})
     public void testAffectTaskNullTaskId() {
         this.taskService.affectTaskToUser(null, this.user.getId());
