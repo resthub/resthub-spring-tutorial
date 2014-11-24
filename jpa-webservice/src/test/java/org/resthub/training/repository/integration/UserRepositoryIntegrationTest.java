@@ -12,7 +12,7 @@ import org.testng.annotations.Test;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-@ActiveProfiles({"resthub-jpa", "test"})
+@ActiveProfiles({"resthub-jpa", "resthub-pool-bonecp", "test"})
 public class UserRepositoryIntegrationTest extends AbstractTest {
 
     @Inject
