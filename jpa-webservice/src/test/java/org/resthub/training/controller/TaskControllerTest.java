@@ -9,7 +9,7 @@ public class TaskControllerTest extends AbstractWebTest {
 
     public TaskControllerTest() {
         // Activate resthub-web-server and resthub-jpa Spring profiles
-        super("resthub-web-server,resthub-jpa");
+        super("resthub-web-server,resthub-jpa,resthub-pool-bonecp");
     }
 
     @Test
