@@ -1,7 +1,6 @@
 package org.resthub.training.service.integration;
 
 import org.fest.assertions.api.Assertions;
-import org.resthub.test.AbstractTest;
 import org.resthub.training.MocksConfiguration;
 import org.resthub.training.model.Task;
 import org.resthub.training.model.User;
@@ -11,6 +10,7 @@ import org.resthub.training.service.TaskService;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
+import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.annotations.Test;
 
 import javax.inject.Inject;
@@ -21,8 +21,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = MocksConfiguration.class)
-@ActiveProfiles({"resthub-jpa", "test"})
-public class TaskServiceIntegrationTest extends AbstractTest {
+@ActiveProfiles({"resthub-jpa", "resthub-pool-bonecp", "test"})
+public class TaskServiceIntegrationTest extends AbstractTestNGSpringContextTests {
 
     @Inject
     @Named("taskService")
